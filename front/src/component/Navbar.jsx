@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+// import { Route, Routes } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -25,6 +25,7 @@ function MyNavbar() {
                             <NavDropdown.Divider />
                             <NavDropdown.Item as={Link} to="">Déconnexion</NavDropdown.Item>
                         </NavDropdown>
+                        <Nav.Link as={Link} to="/connexion">Connexion/Inscription</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -1,0 +1,27 @@
+.btn-good,
+.btn-good:active {
+    color: #15161d !important;
+    background-color: #f6c614 !important;
+    border-color: #f6c614 !important;
+}
+
+.btn-good:hover {
+    color: #fff !important;
+    background-color: #f6c614 !important;
+    border-color: #f6c614 !important;
+}
+
+.btn-good:focus,
+.btn-good.focus {
+    box-shadow: 0 0 0 0.2rem rgba(246, 198, 20, 0.5) !important;
+}
+
+/* Supprimer la mise en surbrillance (focus) des champs de saisie */
+.form-control:focus {
+    border-color: #f6c614;
+    box-shadow: 0 0 0 0.2rem rgba(246, 198, 20, 0.5) !important;
+}
+
+.error {
+    color: #c92b39 !important;
+}

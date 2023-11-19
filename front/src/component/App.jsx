@@ -4,16 +4,18 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import Home from './Home';
 import Shop from './Shop';
+import Connexion from './Connexion';
 
 
 function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar />
-      <div style={{ flexGrow: 1 }}>
+      <div style={{ flexGrow: 1 }} className='bg-color'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop />} />
+          <Route path='/connexion' element={<Connexion />} />
         </Routes>
       </div>
       <Footer />
