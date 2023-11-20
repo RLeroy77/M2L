@@ -5,7 +5,7 @@ import Footer from './Footer';
 import Home from './Home';
 import Shop from './Shop';
 import Connexion from './Connexion';
-
+import Profil from './Profil'
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop />} />
           <Route path='/connexion' element={<Connexion />} />
+          <Route path='/profil' element={<Profil />} />
         </Routes>
       </div>
       <Footer />

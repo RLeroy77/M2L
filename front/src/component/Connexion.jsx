@@ -19,7 +19,10 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 function Connexion() {
     const [connexion, setConnexion] = useState([])
     const [affichage, setAffichage] = useState(false)
-    const [error, setError] = useState('');
+    const [errorInscription, setErrorInscription] = useState('');
+    const [errorConnexion, setErrorConnexion] = useState('');
+    const [valideInscription, setValideInscription] = useState('');
+    const [valideConnexion, setValideConnexion] = useState('');
     //Nouveau state pour stocker les données de la création d'un utilisateur
     const [newUserData, setNewUserData] = useState({
         nom: "",
@@ -45,15 +48,17 @@ function Connexion() {
         const requiredFields = ['nom', 'prenom', 'user_name', 'mot_de_passe', 'confirmMotDePasse'];
         for (const field of requiredFields) {
             if (!newUserData[field]) {
-                setError(`Veuillez remplir le champ ${field}.`);
+                setErrorInscription(`Veuillez remplir le champ ${field}.`);
+                setTimeout(() => setErrorInscription(''), 5000);
                 return false;
             }
         }
         if (newUserData.mot_de_passe !== newUserData.confirmMotDePasse) {
-            setError('Les mots de passe ne correspondent pas.');
+            setErrorInscription('Les mots de passe ne correspondent pas.');
+            setTimeout(() => setErrorInscription(''), 5000);
             return false;
         }
-        setError('');
+        setErrorInscription('');
         return true;
     };
 
@@ -78,7 +83,7 @@ function Connexion() {
                 });
 
                 if (reponse.ok) {
-                    await reponse.json();
+                    setValideInscription('Utilisateur ajouté avec succès');
                     recup();
                     setNewUserData({
                         nom: '',
@@ -87,12 +92,47 @@ function Connexion() {
                         mot_de_passe: '',
                         confirmMotDePasse: '',
                     });
+                    setTimeout(() => setValideInscription(''), 5000);
                 } else {
                     console.error("Erreur lors de l'ajout de l'utilisateur :", reponse.statusText);
+                    setErrorInscription("Erreur lors de l'ajout de l'utilisateur : " + reponse.statusText);
+                    setTimeout(() => setErrorInscription(''), 5000);
                 }
             }
         } catch (error) {
             console.error("Erreur lors de l'ajout de l'utilisateur :", error);
+            setErrorInscription("Erreur lors de l'ajout de l'utilisateur : " + error);
+            setTimeout(() => setErrorInscription(''), 5000);
+        }
+    };
+
+    const handleConnexion = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/connexion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_name: newUserData.user_name,
+                    mot_de_passe: newUserData.mot_de_passe,
+                }),
+            });
+
+            if (response.ok) {
+                setValideConnexion('Connexion réussie !');
+                console.log('Utilisateur authentifié avec succès');
+                setTimeout(() => setValideConnexion(''), 5000);
+                // Vous pouvez rediriger l'utilisateur vers une autre page ici
+            } else {
+                console.error("Erreur lors de la connexion :", response.statusText);
+                setErrorConnexion("Nom d'utilisateur ou mot de passe incorrect");
+                setTimeout(() => setErrorConnexion(''), 5000);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la connexion :", error);
+            setErrorConnexion("Erreur lors de la connexion : " + error);
+            setTimeout(() => setErrorConnexion(''), 5000);
         }
     };
 
@@ -157,14 +197,37 @@ function Connexion() {
                                 </Col>
                             </Row>
                             <Button className='btn-good' onClick={handleAddUser}>Ajouter</Button>
-                            {error && <p className='error'>{error}</p>}
+                            {errorInscription && <p className='error'>{errorInscription}</p>}
+                            {valideInscription && <p className='success'>{valideInscription}</p>}
                         </Form>
                     </Col>
 
                     <Col xs={12} sm={6}>
                         <h2>Formulaire de connexion</h2>
                         <Form>
-                            {/* Faire le Formulaire de connexion */}
+                            <Row>
+                                <Col className='mb-2' xs={12} md={6}>
+                                    <InputField
+                                        label="Nom d'utilisateur"
+                                        type="text"
+                                        placeholder="Votre nom d'utilisateur"
+                                        value={newUserData.user_name}
+                                        onChange={(e) => handleInputChange('user_name', e.target.value)}
+                                    />
+                                </Col>
+                                <Col className='mb-2' xs={12} md={6}>
+                                    <InputField
+                                        label="Mot de passe"
+                                        type="password"
+                                        placeholder="Votre mot de passe"
+                                        value={newUserData.mot_de_passe}
+                                        onChange={(e) => handleInputChange('mot_de_passe', e.target.value)}
+                                    />
+                                </Col>
+                            </Row>
+                            <Button className='btn-good' onClick={handleConnexion}>Connexion</Button>
+                            {errorConnexion && <p className='error'>{errorConnexion}</p>}
+                            {valideConnexion && <p className='success'>{valideConnexion}</p>}
                         </Form>
                     </Col>
                 </Row>

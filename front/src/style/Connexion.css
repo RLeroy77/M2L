@@ -25,3 +25,7 @@
 .error {
     color: #c92b39 !important;
 }
+
+.success {
+    color: green;
+}

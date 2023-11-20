@@ -20,7 +20,7 @@ function MyNavbar() {
                     </Nav>
                     <Nav>
                         <NavDropdown title="User Name" id="collapsible-nav-dropdown">
-                            <NavDropdown.Item as={Link} to="">Profil</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
                             <NavDropdown.Item as={Link} to="">Panier</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item as={Link} to="">Déconnexion</NavDropdown.Item>

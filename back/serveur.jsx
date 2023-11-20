@@ -140,6 +140,33 @@ app.delete('/utilisateur/:id', withDBConnection, async (req, res) => {
     }
 });
 
+// Route pour la connexion
+app.post('/connexion', withDBConnection, async (req, res) => {
+    const { user_name, mot_de_passe } = req.body;
+    try {
+        const [rows] = await req.dbConnection.execute('SELECT * FROM utilisateur WHERE user_name = ?', [user_name]);
+
+        if (rows.length === 0) {
+            return res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+
+        const hashedPassword = rows[0].mot_de_passe;
+
+        const passwordMatch = await bcrypt.compare(mot_de_passe, hashedPassword);
+
+        if (passwordMatch) {
+            // Authentification réussie
+            res.status(200).json({ message: "Authentification réussie" });
+        } else {
+            // Mot de passe incorrect
+            res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de la connexion" });
+    }
+});
+
 
 
 
