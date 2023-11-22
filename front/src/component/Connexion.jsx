@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/esm/Container';
-import Row from 'react-bootstrap/esm/Row';
-import Col from 'react-bootstrap/esm/Col';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import '../style/Connexion.css'
-// import { Route, Routes } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import '../style/Connexion.css';
 
 const InputField = ({ label, type, placeholder, value, onChange }) => {
     return (
@@ -17,43 +13,55 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 };
 
 function Connexion() {
-    const [connexion, setConnexion] = useState([])
-    const [affichage, setAffichage] = useState(false)
+    localStorage.clear();
+    const ls = localStorage;
+    const navigate = useNavigate();
+    const [connexion, setConnexion] = useState([]);
+    const [affichage, setAffichage] = useState(false);
     const [errorInscription, setErrorInscription] = useState('');
     const [errorConnexion, setErrorConnexion] = useState('');
     const [valideInscription, setValideInscription] = useState('');
     const [valideConnexion, setValideConnexion] = useState('');
-    //Nouveau state pour stocker les données de la création d'un utilisateur
-    const [newUserData, setNewUserData] = useState({
+
+    // État pour le formulaire d'inscription
+    const [newUserDataInscription, setNewUserDataInscription] = useState({
         nom: "",
         prenom: "",
         user_name: "",
         mot_de_passe: "",
         confirmMotDePasse: '',
-    })
+    });
+
+    // État pour le formulaire de connexion
+    const [newUserDataConnexion, setNewUserDataConnexion] = useState({
+        user_name: "",
+        mot_de_passe: "",
+    });
 
     const recup = async () => {
         try {
             const reponse = await fetch("http://localhost:8000/utilisateur");
             const data = await reponse.json();
             console.log(data);
-            setConnexion(data)
-            setAffichage(true)
+            setConnexion(data);
+            setAffichage(true);
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-    const validateFields = () => {
+
+    // Partie du formulaire d'inscription
+    const validateFieldsInscription = () => {
         const requiredFields = ['nom', 'prenom', 'user_name', 'mot_de_passe', 'confirmMotDePasse'];
         for (const field of requiredFields) {
-            if (!newUserData[field]) {
+            if (!newUserDataInscription[field]) {
                 setErrorInscription(`Veuillez remplir le champ ${field}.`);
                 setTimeout(() => setErrorInscription(''), 5000);
                 return false;
             }
         }
-        if (newUserData.mot_de_passe !== newUserData.confirmMotDePasse) {
+        if (newUserDataInscription.mot_de_passe !== newUserDataInscription.confirmMotDePasse) {
             setErrorInscription('Les mots de passe ne correspondent pas.');
             setTimeout(() => setErrorInscription(''), 5000);
             return false;
@@ -62,30 +70,30 @@ function Connexion() {
         return true;
     };
 
-    const handleInputChange = (fieldName, value) => {
-        setNewUserData({ ...newUserData, [fieldName]: value });
+    const handleInputChangeInscription = (fieldName, value) => {
+        setNewUserDataInscription({ ...newUserDataInscription, [fieldName]: value });
     };
 
     const handleAddUser = async () => {
         try {
-            if (validateFields()) {
+            if (validateFieldsInscription()) {
                 const reponse = await fetch('http://localhost:8000/utilisateur', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        nom: newUserData.nom,
-                        prenom: newUserData.prenom,
-                        user_name: newUserData.user_name,
-                        mot_de_passe: newUserData.mot_de_passe,
+                        nom: newUserDataInscription.nom,
+                        prenom: newUserDataInscription.prenom,
+                        user_name: newUserDataInscription.user_name,
+                        mot_de_passe: newUserDataInscription.mot_de_passe,
                     }),
                 });
 
                 if (reponse.ok) {
                     setValideInscription('Utilisateur ajouté avec succès');
                     recup();
-                    setNewUserData({
+                    setNewUserDataInscription({
                         nom: '',
                         prenom: '',
                         user_name: '',
@@ -106,6 +114,12 @@ function Connexion() {
         }
     };
 
+
+    // Partie du formulaire de connexion
+    const handleInputChangeConnexion = (fieldName, value) => {
+        setNewUserDataConnexion({ ...newUserDataConnexion, [fieldName]: value });
+    };
+
     const handleConnexion = async () => {
         try {
             const response = await fetch('http://localhost:8000/connexion', {
@@ -114,16 +128,19 @@ function Connexion() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_name: newUserData.user_name,
-                    mot_de_passe: newUserData.mot_de_passe,
+                    user_name: newUserDataConnexion.user_name,
+                    mot_de_passe: newUserDataConnexion.mot_de_passe,
                 }),
             });
 
             if (response.ok) {
+                const data = await response.json();
                 setValideConnexion('Connexion réussie !');
-                console.log('Utilisateur authentifié avec succès');
-                setTimeout(() => setValideConnexion(''), 5000);
-                // Vous pouvez rediriger l'utilisateur vers une autre page ici
+                console.log('Utilisateur authentifié avec succès', data.userId, data.isAdmin);
+                // Stocker dans localStorage
+                ls.setItem('userId', data.userId);
+                ls.setItem('isAdmin', data.isAdmin);
+                navigate("/shop");
             } else {
                 console.error("Erreur lors de la connexion :", response.statusText);
                 setErrorConnexion("Nom d'utilisateur ou mot de passe incorrect");
@@ -136,9 +153,11 @@ function Connexion() {
         }
     };
 
+
+
     useEffect(() => {
-        recup()
-    }, [])
+        recup();
+    }, []);
 
     return (
         <Container fluid="">
@@ -153,8 +172,8 @@ function Connexion() {
                                         label="Nom"
                                         type="text"
                                         placeholder="Votre nom"
-                                        value={newUserData.nom}
-                                        onChange={(e) => handleInputChange('nom', e.target.value)}
+                                        value={newUserDataInscription.nom}
+                                        onChange={(e) => handleInputChangeInscription('nom', e.target.value)}
                                     />
                                 </Col>
                                 <Col className='mb-2' xs={12} md={6}>
@@ -162,8 +181,8 @@ function Connexion() {
                                         label="Prénom"
                                         type="text"
                                         placeholder="Votre prénom"
-                                        value={newUserData.prenom}
-                                        onChange={(e) => handleInputChange('prenom', e.target.value)}
+                                        value={newUserDataInscription.prenom}
+                                        onChange={(e) => handleInputChangeInscription('prenom', e.target.value)}
                                     />
                                 </Col>
                                 <Col className='mb-2' xs={12} md={6}>
@@ -171,8 +190,8 @@ function Connexion() {
                                         label="Nom d'utilisateur"
                                         type="text"
                                         placeholder="Votre nom d'utilisateur"
-                                        value={newUserData.user_name}
-                                        onChange={(e) => handleInputChange('user_name', e.target.value)}
+                                        value={newUserDataInscription.user_name}
+                                        onChange={(e) => handleInputChangeInscription('user_name', e.target.value)}
                                     />
                                 </Col>
                             </Row>
@@ -182,8 +201,8 @@ function Connexion() {
                                         label="Mot de passe"
                                         type="password"
                                         placeholder="Votre mot de passe"
-                                        value={newUserData.mot_de_passe}
-                                        onChange={(e) => handleInputChange('mot_de_passe', e.target.value)}
+                                        value={newUserDataInscription.mot_de_passe}
+                                        onChange={(e) => handleInputChangeInscription('mot_de_passe', e.target.value)}
                                     />
                                 </Col>
                                 <Col className='mb-2' xs={12} md={6}>
@@ -191,8 +210,8 @@ function Connexion() {
                                         label="Confirmer le mot de passe"
                                         type="password"
                                         placeholder="Confirmer votre mot de passe"
-                                        value={newUserData.confirmMotDePasse}
-                                        onChange={(e) => handleInputChange('confirmMotDePasse', e.target.value)}
+                                        value={newUserDataInscription.confirmMotDePasse}
+                                        onChange={(e) => handleInputChangeInscription('confirmMotDePasse', e.target.value)}
                                     />
                                 </Col>
                             </Row>
@@ -211,8 +230,8 @@ function Connexion() {
                                         label="Nom d'utilisateur"
                                         type="text"
                                         placeholder="Votre nom d'utilisateur"
-                                        value={newUserData.user_name}
-                                        onChange={(e) => handleInputChange('user_name', e.target.value)}
+                                        value={newUserDataConnexion.user_name}
+                                        onChange={(e) => handleInputChangeConnexion('user_name', e.target.value)}
                                     />
                                 </Col>
                                 <Col className='mb-2' xs={12} md={6}>
@@ -220,8 +239,8 @@ function Connexion() {
                                         label="Mot de passe"
                                         type="password"
                                         placeholder="Votre mot de passe"
-                                        value={newUserData.mot_de_passe}
-                                        onChange={(e) => handleInputChange('mot_de_passe', e.target.value)}
+                                        value={newUserDataConnexion.mot_de_passe}
+                                        onChange={(e) => handleInputChangeConnexion('mot_de_passe', e.target.value)}
                                     />
                                 </Col>
                             </Row>

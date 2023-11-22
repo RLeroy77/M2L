@@ -1,13 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Route, Routes } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../style/Navbar.css'
 
 function MyNavbar() {
+    const [userId, setUserId] = useState(localStorage.getItem('userId'));
+    const [userName, setUserName] = useState('');
+
+    const handleLogout = () => {
+        localStorage.clear();
+    };
+
+    const getUserInfo = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:8000/user_name/${id}`);
+            const data = await response.json();
+            setUserName(data[0].user_name);
+        } catch (error) {
+            console.error('Error fetching user info:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (userId) {
+            getUserInfo(userId);
+        }
+    }, [userId]);
+
+
     return (
         <Navbar collapseOnSelect expand="sm" className="bg-jaune">
             <Container>
@@ -19,13 +40,16 @@ function MyNavbar() {
                         <Nav.Link as={Link} to="">Abouts</Nav.Link>
                     </Nav>
                     <Nav>
-                        <NavDropdown title="User Name" id="collapsible-nav-dropdown">
-                            <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
-                            <NavDropdown.Item as={Link} to="">Panier</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item as={Link} to="">Déconnexion</NavDropdown.Item>
-                        </NavDropdown>
-                        <Nav.Link as={Link} to="/connexion">Connexion/Inscription</Nav.Link>
+                        {userId ? (
+                            <NavDropdown title={userName || 'user name'} id="collapsible-nav-dropdown">
+                                <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="">Panier</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item onClick={handleLogout}>Déconnexion</NavDropdown.Item>
+                            </NavDropdown>
+                        ) : (
+                            <Nav.Link as={Link} to="/connexion">Connexion/Inscription</Nav.Link>
+                        )}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

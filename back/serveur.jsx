@@ -11,6 +11,7 @@ const pool = mysql.createPool({
     user: process.env.BD_USER,
     password: process.env.BD_PWD,
     database: process.env.BD_DTB,
+    port: process.env.BD_PORT,
 })
 
 
@@ -21,7 +22,6 @@ const withDBConnection = async (req, res, next) => {
         req.dbConnection = pool.promise();
         console.log("Connexion réussie");
         next(); // Passez à la route suivante
-
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur de connexion à la base de données");
@@ -37,6 +37,64 @@ app.get("/", (req, res) => {
     res.end("<h1> Page d'accueil <h1> "); // On renvoie du code HTML
 });
 
+// Route pour ajouter un utilisateur utilisé dans Connexion.jsx
+app.post('/utilisateur', withDBConnection, async (req, res) => {
+    try {
+        const { nom, prenom, user_name, mot_de_passe } = req.body;
+        const id = crypto.randomUUID();
+        const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
+        const admin = false;
+        await req.dbConnection.execute(
+            'INSERT INTO utilisateur (id, nom, prenom, user_name, date_creation, mot_de_passe, admin) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [id, nom, prenom, user_name, date_creation, hashedPassword, admin]
+        );
+        res.status(200).json({ message: "Utilisateur ajouté avec succès" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de l'ajout de l'utilisateur" });
+    }
+});
+
+// Route pour la connexion utilisé dans Connexion.jsx
+app.post('/connexion', withDBConnection, async (req, res) => {
+    const { user_name, mot_de_passe } = req.body;
+    try {
+        const [rows] = await req.dbConnection.execute('SELECT * FROM utilisateur WHERE user_name = ?', [user_name]);
+        if (rows.length === 0) {
+            return res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+        const hashedPassword = rows[0].mot_de_passe;
+        const passwordMatch = await bcrypt.compare(mot_de_passe, hashedPassword);
+        if (passwordMatch) {
+            // Authentification réussie
+            res.status(200).json({ userId: rows[0].id, isAdmin: rows[0].admin, message: "Authentification réussie" });
+        } else {
+            // Mot de passe incorrect
+            res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de la connexion" });
+    }
+});
+
+// Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
+app.get('/user_name/:id', withDBConnection, async (req, res) => {
+    const id = req.params.id;
+    try {
+        console.log("Lancement de la requête");
+        const [rows, fields] = await req.dbConnection.execute('SELECT user_name FROM utilisateur WHERE id = ?', [id]);
+        console.log(rows);
+        res.status(200).json(rows);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+});
+
+
 // Route pour obtenir toutes les utilisateurs
 app.get('/utilisateur', withDBConnection, async (req, res) => {
     try {
@@ -51,40 +109,9 @@ app.get('/utilisateur', withDBConnection, async (req, res) => {
     }
 });
 
-// Route pour obtenir un utilisateur par ID
-app.get('/utilisateur/:id', withDBConnection, async (req, res) => {
-    const id = req.params.id;
-    try {
-        console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT * FROM utilisateur WHERE id = ?', [id]);
-        console.log(rows);
-        res.status(200).json(rows);
 
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
-    }
-});
 
-// Route pour ajouter un utilisateur par ID
-app.post('/utilisateur', withDBConnection, async (req, res) => {
-    try {
-        const { nom, prenom, user_name, mot_de_passe } = req.body;
-        const id = crypto.randomUUID();
-        const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
-        const admin = false;
-        await req.dbConnection.execute(
-            'INSERT INTO utilisateur (id, nom, prenom, user_name, date_creation, mot_de_passe, admin) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [id, nom, prenom, user_name, date_creation, hashedPassword, admin]
-        );
-        res.status(200).json({ message: "Utilisateur ajouté avec succès" });
 
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Erreur lors de l'ajout de l'utilisateur" });
-    }
-});
 
 // Route pour mettre à jour un utilisateur par ID
 app.put('/utilisateur/:id', withDBConnection, async (req, res) => {
@@ -140,32 +167,7 @@ app.delete('/utilisateur/:id', withDBConnection, async (req, res) => {
     }
 });
 
-// Route pour la connexion
-app.post('/connexion', withDBConnection, async (req, res) => {
-    const { user_name, mot_de_passe } = req.body;
-    try {
-        const [rows] = await req.dbConnection.execute('SELECT * FROM utilisateur WHERE user_name = ?', [user_name]);
 
-        if (rows.length === 0) {
-            return res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
-        }
-
-        const hashedPassword = rows[0].mot_de_passe;
-
-        const passwordMatch = await bcrypt.compare(mot_de_passe, hashedPassword);
-
-        if (passwordMatch) {
-            // Authentification réussie
-            res.status(200).json({ message: "Authentification réussie" });
-        } else {
-            // Mot de passe incorrect
-            res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Erreur lors de la connexion" });
-    }
-});
 
 
 
