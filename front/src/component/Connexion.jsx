@@ -12,12 +12,10 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
     );
 };
 
-function Connexion() {
+function Connexion(userId, setUserId, isAdmin, setIsAdmin, userName, setUserName) {
     localStorage.clear();
     const ls = localStorage;
     const navigate = useNavigate();
-    const [connexion, setConnexion] = useState([]);
-    const [affichage, setAffichage] = useState(false);
     const [errorInscription, setErrorInscription] = useState('');
     const [errorConnexion, setErrorConnexion] = useState('');
     const [valideInscription, setValideInscription] = useState('');
@@ -37,19 +35,6 @@ function Connexion() {
         user_name: "",
         mot_de_passe: "",
     });
-
-    const recup = async () => {
-        try {
-            const reponse = await fetch("http://localhost:8000/utilisateur");
-            const data = await reponse.json();
-            console.log(data);
-            setConnexion(data);
-            setAffichage(true);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
 
     // Partie du formulaire d'inscription
     const validateFieldsInscription = () => {
@@ -92,7 +77,6 @@ function Connexion() {
 
                 if (reponse.ok) {
                     setValideInscription('Utilisateur ajouté avec succès');
-                    recup();
                     setNewUserDataInscription({
                         nom: '',
                         prenom: '',
@@ -140,7 +124,10 @@ function Connexion() {
                 // Stocker dans localStorage
                 ls.setItem('userId', data.userId);
                 ls.setItem('isAdmin', data.isAdmin);
-                navigate("/shop");
+                // A changer c'est pas bien 
+                setTimeout(() => window.location.reload(), 100);
+                navigate("/shop")
+
             } else {
                 console.error("Erreur lors de la connexion :", response.statusText);
                 setErrorConnexion("Nom d'utilisateur ou mot de passe incorrect");
@@ -153,106 +140,99 @@ function Connexion() {
         }
     };
 
-
-
     useEffect(() => {
-        recup();
     }, []);
 
     return (
         <Container fluid="">
-            {affichage ? (
-                <Row>
-                    <Col xs={12} sm={6}>
-                        <h2>Formulaire d'inscription</h2>
-                        <Form>
-                            <Row>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Nom"
-                                        type="text"
-                                        placeholder="Votre nom"
-                                        value={newUserDataInscription.nom}
-                                        onChange={(e) => handleInputChangeInscription('nom', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Prénom"
-                                        type="text"
-                                        placeholder="Votre prénom"
-                                        value={newUserDataInscription.prenom}
-                                        onChange={(e) => handleInputChangeInscription('prenom', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Nom d'utilisateur"
-                                        type="text"
-                                        placeholder="Votre nom d'utilisateur"
-                                        value={newUserDataInscription.user_name}
-                                        onChange={(e) => handleInputChangeInscription('user_name', e.target.value)}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Mot de passe"
-                                        type="password"
-                                        placeholder="Votre mot de passe"
-                                        value={newUserDataInscription.mot_de_passe}
-                                        onChange={(e) => handleInputChangeInscription('mot_de_passe', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Confirmer le mot de passe"
-                                        type="password"
-                                        placeholder="Confirmer votre mot de passe"
-                                        value={newUserDataInscription.confirmMotDePasse}
-                                        onChange={(e) => handleInputChangeInscription('confirmMotDePasse', e.target.value)}
-                                    />
-                                </Col>
-                            </Row>
-                            <Button className='btn-good' onClick={handleAddUser}>Ajouter</Button>
-                            {errorInscription && <p className='error'>{errorInscription}</p>}
-                            {valideInscription && <p className='success'>{valideInscription}</p>}
-                        </Form>
-                    </Col>
+            <Row>
+                <Col xs={12} sm={6}>
+                    <h2>Formulaire d'inscription</h2>
+                    <Form>
+                        <Row>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Nom"
+                                    type="text"
+                                    placeholder="Votre nom"
+                                    value={newUserDataInscription.nom}
+                                    onChange={(e) => handleInputChangeInscription('nom', e.target.value)}
+                                />
+                            </Col>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Prénom"
+                                    type="text"
+                                    placeholder="Votre prénom"
+                                    value={newUserDataInscription.prenom}
+                                    onChange={(e) => handleInputChangeInscription('prenom', e.target.value)}
+                                />
+                            </Col>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Nom d'utilisateur"
+                                    type="text"
+                                    placeholder="Votre nom d'utilisateur"
+                                    value={newUserDataInscription.user_name}
+                                    onChange={(e) => handleInputChangeInscription('user_name', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Mot de passe"
+                                    type="password"
+                                    placeholder="Votre mot de passe"
+                                    value={newUserDataInscription.mot_de_passe}
+                                    onChange={(e) => handleInputChangeInscription('mot_de_passe', e.target.value)}
+                                />
+                            </Col>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Confirmer le mot de passe"
+                                    type="password"
+                                    placeholder="Confirmer votre mot de passe"
+                                    value={newUserDataInscription.confirmMotDePasse}
+                                    onChange={(e) => handleInputChangeInscription('confirmMotDePasse', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Button className='btn-good' onClick={handleAddUser}>Ajouter</Button>
+                        {errorInscription && <p className='error'>{errorInscription}</p>}
+                        {valideInscription && <p className='success'>{valideInscription}</p>}
+                    </Form>
+                </Col>
 
-                    <Col xs={12} sm={6}>
-                        <h2>Formulaire de connexion</h2>
-                        <Form>
-                            <Row>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Nom d'utilisateur"
-                                        type="text"
-                                        placeholder="Votre nom d'utilisateur"
-                                        value={newUserDataConnexion.user_name}
-                                        onChange={(e) => handleInputChangeConnexion('user_name', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={6}>
-                                    <InputField
-                                        label="Mot de passe"
-                                        type="password"
-                                        placeholder="Votre mot de passe"
-                                        value={newUserDataConnexion.mot_de_passe}
-                                        onChange={(e) => handleInputChangeConnexion('mot_de_passe', e.target.value)}
-                                    />
-                                </Col>
-                            </Row>
-                            <Button className='btn-good' onClick={handleConnexion}>Connexion</Button>
-                            {errorConnexion && <p className='error'>{errorConnexion}</p>}
-                            {valideConnexion && <p className='success'>{valideConnexion}</p>}
-                        </Form>
-                    </Col>
-                </Row>
-            ) : (
-                <p>Pas d'utilisateur</p>
-            )}
+                <Col xs={12} sm={6}>
+                    <h2>Formulaire de connexion</h2>
+                    <Form>
+                        <Row>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Nom d'utilisateur"
+                                    type="text"
+                                    placeholder="Votre nom d'utilisateur"
+                                    value={newUserDataConnexion.user_name}
+                                    onChange={(e) => handleInputChangeConnexion('user_name', e.target.value)}
+                                />
+                            </Col>
+                            <Col className='mb-2' xs={12} md={6}>
+                                <InputField
+                                    label="Mot de passe"
+                                    type="password"
+                                    placeholder="Votre mot de passe"
+                                    value={newUserDataConnexion.mot_de_passe}
+                                    onChange={(e) => handleInputChangeConnexion('mot_de_passe', e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                        <Button className='btn-good' onClick={handleConnexion}>Connexion</Button>
+                        {errorConnexion && <p className='error'>{errorConnexion}</p>}
+                        {valideConnexion && <p className='success'>{valideConnexion}</p>}
+                    </Form>
+                </Col>
+            </Row>
         </Container>
     );
 }

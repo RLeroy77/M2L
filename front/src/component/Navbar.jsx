@@ -4,30 +4,15 @@ import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../style/Navbar.css'
 
-function MyNavbar() {
-    const [userId, setUserId] = useState(localStorage.getItem('userId'));
-    const [userName, setUserName] = useState('');
+function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin, userName, setUserName }) {
 
     const handleLogout = () => {
         localStorage.clear();
-    };
-
-    const getUserInfo = async (id) => {
-        try {
-            const response = await fetch(`http://localhost:8000/user_name/${id}`);
-            const data = await response.json();
-            setUserName(data[0].user_name);
-        } catch (error) {
-            console.error('Error fetching user info:', error);
-        }
+        setUserId(null)
     };
 
     useEffect(() => {
-        if (userId) {
-            getUserInfo(userId);
-        }
     }, [userId]);
-
 
     return (
         <Navbar collapseOnSelect expand="sm" className="bg-jaune">
@@ -41,9 +26,15 @@ function MyNavbar() {
                     </Nav>
                     <Nav>
                         {userId ? (
-                            <NavDropdown title={userName || 'user name'} id="collapsible-nav-dropdown">
+                            <NavDropdown title={userName} id="collapsible-nav-dropdown">
                                 <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="">Panier</NavDropdown.Item>
+                                {isAdmin === "1" && (
+                                    <>
+                                        <NavDropdown.Item as={Link} to="/">Gestion des comptes</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/AddProduit">Gestion des produits</NavDropdown.Item>
+                                    </>
+                                )}
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item onClick={handleLogout}>Déconnexion</NavDropdown.Item>
                             </NavDropdown>

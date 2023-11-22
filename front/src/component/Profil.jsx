@@ -1,12 +1,16 @@
-import React from 'react';
-import { Container, Row, Col} from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 
 
-function Profil() {
+function Profil({ userId, setUserId, isAdmin, setIsAdmin, userName, setUserName }) {
+
+    useEffect(() => {
+    }, [userId]);
+
     return (
         <Container fluid="">
             <Row>
-                <Col>Votre Profil</Col>
+                <Col>Votre Profil : {userName}</Col>
             </Row>
         </Container>
     )

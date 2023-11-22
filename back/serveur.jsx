@@ -79,7 +79,7 @@ app.post('/connexion', withDBConnection, async (req, res) => {
     }
 });
 
-// Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
+// Route pour obtenir un user_name par ID utilisé dans App.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     try {
@@ -95,7 +95,27 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 });
 
 
-// Route pour obtenir toutes les utilisateurs
+// Route pour ajouter un produit utilisé dans AddProduit.jsx
+app.post('/produit', withDBConnection, async (req, res) => {
+    try {
+        const { nom, prix, quantite, description } = req.body;
+        const id = crypto.randomUUID();
+        const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        await req.dbConnection.execute(
+            'INSERT INTO produit (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
+            [id, nom, prix, quantite, description, date_creation]
+        );
+        res.status(200).json({ message: "Produit ajouté avec succès" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de l'ajout d'un produit" });
+    }
+});
+
+
+
+
+// Route pour obtenir toutes les utilisateurs 
 app.get('/utilisateur', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
@@ -166,11 +186,6 @@ app.delete('/utilisateur/:id', withDBConnection, async (req, res) => {
         res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur" });
     }
 });
-
-
-
-
-
 
 app.listen(8000, () => {
     console.log("Serveur à l'écoute")
