@@ -95,7 +95,7 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 });
 
 
-// Route pour ajouter un produit utilisé dans AddProduit.jsx
+// Route pour ajouter un produit utilisé dans AdminProduit.jsx
 app.post('/produit', withDBConnection, async (req, res) => {
     try {
         const { nom, prix, quantite, description } = req.body;
@@ -112,6 +112,18 @@ app.post('/produit', withDBConnection, async (req, res) => {
     }
 });
 
+//Route pour obtenir tous les produits dans Admin.jsx
+app.get('/produit', withDBConnection, async (req, res) => {
+    try {
+        console.log("Lancement de la requête");
+        const [rows, fields] = await req.dbConnection.execute('SELECT * FROM produit');
+        console.log(rows);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.log(err);
+        res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+});
 
 
 

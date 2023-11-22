@@ -2,7 +2,7 @@ import React from "react";
 // import { Route, Routes } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 
-function Home(userId, setUserId, isAdmin, setIsAdmin, userName, setUserName) {
+function Home(userId, setUserId, isAdmin, setIsAdmin) {
     return (
         <Container fluid="">
             <Row>

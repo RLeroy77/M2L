@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
 
-function Profil({ userId, setUserId, isAdmin, setIsAdmin, userName, setUserName }) {
+function Profil({ userId, setUserId, isAdmin, setIsAdmin }) {
 
     useEffect(() => {
     }, [userId]);
@@ -10,7 +10,9 @@ function Profil({ userId, setUserId, isAdmin, setIsAdmin, userName, setUserName 
     return (
         <Container fluid="">
             <Row>
-                <Col>Votre Profil : {userName}</Col>
+                <Col>
+                    {/* <Col>Votre Profil : {userName}</Col> */}
+                </Col>
             </Row>
         </Container>
     )
