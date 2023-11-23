@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import images from './images';
 import '../style/Connexion.css';
+
 
 const InputField = ({ label, type, placeholder, value, onChange }) => {
     return (
@@ -23,10 +25,11 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         prix: "",
         quantite: "",
         description: "",
+        image: null,
     });
 
     const validateFieldsProduct = () => {
-        const requiredFields = ['nom', 'prix', 'quantite', 'description'];
+        const requiredFields = ['nom', 'prix', 'quantite', 'description', 'image'];
         for (const field of requiredFields) {
             if (!newDataProduct[field]) {
                 setErrorProduct(`Veuillez remplir le champ ${field}.`);
@@ -45,17 +48,16 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
     const handlAddProduct = async () => {
         try {
             if (validateFieldsProduct()) {
+                const formData = new FormData();
+                formData.append('nom', newDataProduct.nom);
+                formData.append('prix', newDataProduct.prix);
+                formData.append('quantite', newDataProduct.quantite);
+                formData.append('description', newDataProduct.description);
+                formData.append('image', newDataProduct.image);
+
                 const reponse = await fetch('http://localhost:8000/produit', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        nom: newDataProduct.nom,
-                        prix: newDataProduct.prix,
-                        quantite: newDataProduct.quantite,
-                        description: newDataProduct.description,
-                    }),
+                    body: formData,
                 });
 
                 if (reponse.ok) {
@@ -65,8 +67,10 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                         prix: "",
                         quantite: "",
                         description: "",
+                        image: null,
                     });
                     setTimeout(() => setValideProduct(''), 5000);
+                    window.location.reload();
                 } else {
                     console.error("Erreur lors de l'ajout d'un produit :", reponse.statusText);
                     setErrorProduct("Erreur lors de l'ajout d'un produit : " + reponse.statusText);
@@ -94,12 +98,13 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
     useEffect(() => {
         RecupProduct();
     }, []);
+
     return (
         <Container fluid="">
             <Row>
                 <Col className='mb-5' xs={12}>
                     <h2>Formulaire d'ajout de produit</h2>
-                    <Form>
+                    <Form encType="multipart/form-data">
                         <Row>
                             <Col className='mb-2' xs={12} md={4} xl={3}>
                                 <InputField
@@ -137,6 +142,16 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                     onChange={(e) => handleInputChangeProduct('description', e.target.value)}
                                 />
                             </Col>
+                            <Col className='mb-2' xs={12} md={4} xl={3}>
+                                <Form.Group controlId={`formImage`}>
+                                    <Form.Label>Image</Form.Label>
+                                    <Form.Control
+                                        type="file"
+                                        accept=".png, .jpg, .jpeg"
+                                        onChange={(e) => handleInputChangeProduct('image', e.target.files[0])}
+                                    />
+                                </Form.Group>
+                            </Col>
                         </Row>
                         <Button className='btn-good' onClick={handlAddProduct}>Ajouter</Button>
                         {errorProduct && <p className='error'>{errorProduct}</p>}
@@ -148,7 +163,18 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                     {Product.length > 0 ? (
                         <ul>
                             {Product.map((product) => (
-                                <li key={product.id}>{product.nom} - {product.prix} - {product.quantite} - {product.description}</li>
+                                <li key={product.id}>
+                                    <div>
+                                        <strong>{product.nom}</strong> - {product.prix} - {product.quantite} - {product.description}
+                                    </div>
+                                    {product.image_path && (
+                                        <img
+                                            src={images.find(image => image.includes(product.id))}
+                                            alt={product.nom}
+                                            style={{ maxWidth: '100px', maxHeight: '100px', marginTop: '10px' }}
+                                        />
+                                    )}
+                                </li>
                             ))}
                         </ul>
                     ) : (

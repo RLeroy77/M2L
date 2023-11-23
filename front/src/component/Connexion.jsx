@@ -126,7 +126,7 @@ function Connexion(userId, setUserId, isAdmin, setIsAdmin) {
                 ls.setItem('isAdmin', data.isAdmin);
                 // A changer c'est pas bien 
                 setTimeout(() => window.location.reload(), 100);
-                navigate("/shop")
+                navigate("/")
 
             } else {
                 console.error("Erreur lors de la connexion :", response.statusText);

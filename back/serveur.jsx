@@ -1,9 +1,13 @@
 const express = require('express')
-const app = express()
 const mysql = require('mysql2')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
+const multer = require('multer');
+const path = require('path');
+const sharp = require('sharp');
+const app = express()
+const fs = require('fs').promises;
 require('dotenv').config()
 
 const pool = mysql.createPool({
@@ -28,8 +32,20 @@ const withDBConnection = async (req, res, next) => {
     }
 };
 
-app.use(express.json())
-app.use(cors())
+// Configuration de multer pour gérer les téléchargements de fichiers
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '../front/src/assets/produits');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + '.png');
+    },
+});
+
+const upload = multer({ storage: storage });
+
+app.use(express.json());
+app.use(cors());
 
 // On définit la route racine "/"
 app.get("/", (req, res) => {
@@ -94,17 +110,23 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
     }
 });
 
-
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
-app.post('/produit', withDBConnection, async (req, res) => {
+app.post('/produit', withDBConnection, upload.single('image'), async (req, res) => {
     try {
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const image = req.file;
+        // Utiliser sharp pour redimensionner l'image
+        const resizedImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
+        await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
+        // Supprimer l'image d'origine après redimensionnement
+        await fs.unlink(image.path);
         await req.dbConnection.execute(
             'INSERT INTO produit (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
             [id, nom, prix, quantite, description, date_creation]
         );
+
         res.status(200).json({ message: "Produit ajouté avec succès" });
     } catch (err) {
         console.log(err);
@@ -112,15 +134,20 @@ app.post('/produit', withDBConnection, async (req, res) => {
     }
 });
 
-//Route pour obtenir tous les produits dans Admin.jsx
+//Route pour obtenir tous les produits dans AdminProduit.jsx
 app.get('/produit', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
         const [rows, fields] = await req.dbConnection.execute('SELECT * FROM produit');
-        console.log(rows);
-        res.status(200).json(rows);
+        // Ajouter le chemin de l'image à chaque produit
+        const productsWithImagePath = rows.map(product => ({
+            ...product,
+            image_path: `../assets/produits/${product.id}.png`,
+        }));
+        console.log(productsWithImagePath);
+        res.status(200).json(productsWithImagePath);
     } catch (error) {
-        console.log(err);
+        console.log(error);
         res.status(500).send("Erreur lors de l'exécution de la requête");
     }
 });
