@@ -35,7 +35,7 @@ const withDBConnection = async (req, res, next) => {
 // Configuration de multer pour gérer les téléchargements de fichiers
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../front/src/assets/produits');
+        cb(null, path.resolve(__dirname, '../front/src/assets/produits'));
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + '.png');
@@ -149,6 +149,32 @@ app.get('/produit', withDBConnection, async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+});
+
+//Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
+app.delete('/produit/:id', withDBConnection, async (req, res) => {
+    const id = req.params.id;
+    const imagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
+    try {
+        // Vérifier si le produit existe avant de le supprimer
+        const [rows] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Produit non trouvé" });
+        }
+        // Le produit existe, supprimer le fichier
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+            console.log("Fichier supprimé avec succès");
+        } else {
+            console.log("Le fichier n'existe pas");
+        }
+        // Procéder à la suppression du produit dans la base de données
+        await req.dbConnection.execute('DELETE FROM produit WHERE id = ?', [id]);
+        res.status(200).json({ message: "Produit supprimé avec succès" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de la suppression du produit" });
     }
 });
 

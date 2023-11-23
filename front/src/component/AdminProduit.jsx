@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import images from './images';
-import '../style/Connexion.css';
+import '../style/AdminProduit.css';
 
 
 const InputField = ({ label, type, placeholder, value, onChange }) => {
@@ -14,11 +14,12 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 };
 
 function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
-
-    const [errorProduct, setErrorProduct] = useState('');
-    const [valideProduct, setValideProduct] = useState('');
     const [Product, setProduct] = useState([]);
     const [affichage, setAffichage] = useState(false);
+    const [errorProduct, setErrorProduct] = useState('');
+    const [valideProduct, setValideProduct] = useState('');
+    const [errorDelete, setErrorDelete] = useState('');
+    const [valideDelete, setValideDelete] = useState('');
 
     const [newDataProduct, setNewDataProduct] = useState({
         nom: "",
@@ -95,6 +96,29 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         }
     };
 
+    const handleDeleteProduct = async (productId) => {
+        try {
+            const deleteProductResponse = await fetch(`http://localhost:8000/produit/${productId}`, {
+                method: 'DELETE',
+            });
+
+            if (deleteProductResponse.ok) {
+                const updatedProductList = Product.filter((product) => product.id !== productId);
+                setProduct(updatedProductList);
+                setValideDelete('Produit supprimé avec succès');
+                setTimeout(() => setValideDelete(''), 5000);
+            } else {
+                console.error("Erreur lors de la suppression du produit :", deleteProductResponse.statusText);
+                setErrorDelete("Erreur lors de la suppression du produit : " + deleteProductResponse.statusText);
+                setTimeout(() => setErrorDelete(''), 5000);
+            }
+        } catch (error) {
+            console.error("Une erreur s'est produite :", error);
+            setErrorDelete("Erreur lors de la suppression du produit : " + error);
+            setTimeout(() => setErrorDelete(''), 5000);
+        }
+    };
+
     useEffect(() => {
         RecupProduct();
     }, []);
@@ -161,22 +185,32 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                 <Col className='mb-5' xs={12}>
                     <h2>Liste des produits</h2>
                     {Product.length > 0 ? (
-                        <ul>
+                        <Row>
                             {Product.map((product) => (
-                                <li key={product.id}>
-                                    <div>
-                                        <strong>{product.nom}</strong> - {product.prix} - {product.quantite} - {product.description}
-                                    </div>
-                                    {product.image_path && (
-                                        <img
-                                            src={images.find(image => image.includes(product.id))}
-                                            alt={product.nom}
-                                            style={{ maxWidth: '100px', maxHeight: '100px', marginTop: '10px' }}
-                                        />
-                                    )}
-                                </li>
+                                <Col key={product.id} xs={12} md={6} lg={4} xxl={3}>
+                                    <Card style={{ width: '18rem', margin: '10px' }}>
+                                        {product.image_path && (
+                                            <Card.Img
+                                                variant="top"
+                                                src={images.find((image) => image.includes(product.id))}
+                                                alt={product.nom}
+                                            />
+                                        )}
+                                        <Card.Body>
+                                            <Card.Title>{product.nom}</Card.Title>
+                                            <Button
+                                                className='btn-delete'
+                                                onClick={() => handleDeleteProduct(product.id)}
+                                            >
+                                                Supprimer
+                                            </Button>
+                                            {errorDelete && <p className='error'>{errorDelete}</p>}
+                                            {valideDelete && <p className='success'>{valideDelete}</p>}
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
                             ))}
-                        </ul>
+                        </Row>
                     ) : (
                         <p>Pas de produit</p>
                     )}

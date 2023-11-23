@@ -6,7 +6,7 @@ import Home from './Home';
 import Shop from './Shop';
 import Connexion from './Connexion';
 import Profil from './Profil'
-import AdminProduit from './AdminProduitt';
+import AdminProduit from './AdminProduit';
 import '../style/App.css';
 
 function App() {
