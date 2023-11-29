@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
 import images from './images';
 import '../style/AdminProduit.css';
 
@@ -16,11 +16,11 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
     const [Product, setProduct] = useState([]);
     const [affichage, setAffichage] = useState(false);
+
+
+    //Pour la création
     const [errorProduct, setErrorProduct] = useState('');
     const [valideProduct, setValideProduct] = useState('');
-    const [errorDelete, setErrorDelete] = useState('');
-    const [valideDelete, setValideDelete] = useState('');
-
     const [newDataProduct, setNewDataProduct] = useState({
         nom: "",
         prix: "",
@@ -29,10 +29,47 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         image: null,
     });
 
-    const validateFieldsProduct = () => {
+    //Pour l'édition
+    const [errorEdit, setErrorEdit] = useState('');
+    const [valideEdit, setValideEdit] = useState('');
+    const [editDataProduct, setEditDataProduct] = useState({
+        nom: "",
+        prix: "",
+        quantite: "",
+        description: "",
+        image: null,
+    });
+    const [selectedProductId, setSelectedProductId] = useState(null);
+
+    //Pour la suppression
+    const [errorDelete, setErrorDelete] = useState('');
+    const [valideDelete, setValideDelete] = useState('');
+
+
+    //Récuperer tous les produits 
+    const RecupProduct = async () => {
+        try {
+            const reponse = await fetch('http://localhost:8000/produit')
+            const data = await reponse.json();
+            setProduct(data);
+            setAffichage(true);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    //Début partie Ajout
+
+    // Gére les changements d'entrée dans le formulaire de création et de maintenir l'état du formulaire à jour en fonction des modifications de l'utilisateur
+    const handleInputChangeAddProduct = (fieldName, value) => {
+        setNewDataProduct({ ...newDataProduct, [fieldName]: value });
+    };
+
+    //Vérifie si tous les champs du formulaire d'ajout son remplis 
+    const validateFieldsAddProduct = (data) => {
         const requiredFields = ['nom', 'prix', 'quantite', 'description', 'image'];
         for (const field of requiredFields) {
-            if (!newDataProduct[field]) {
+            if (!data[field]) {
                 setErrorProduct(`Veuillez remplir le champ ${field}.`);
                 setTimeout(() => setErrorProduct(''), 5000);
                 return false;
@@ -42,13 +79,10 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         return true;
     };
 
-    const handleInputChangeProduct = (fieldName, value) => {
-        setNewDataProduct({ ...newDataProduct, [fieldName]: value });
-    };
-
-    const handlAddProduct = async () => {
+    //Ajoute un produit
+    const handleAddProduct = async () => {
         try {
-            if (validateFieldsProduct()) {
+            if (validateFieldsAddProduct(newDataProduct)) {
                 const formData = new FormData();
                 formData.append('nom', newDataProduct.nom);
                 formData.append('prix', newDataProduct.prix);
@@ -63,6 +97,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
 
                 if (reponse.ok) {
                     setValideProduct('Produit ajouté avec succès');
+                    RecupProduct()
                     setNewDataProduct({
                         nom: "",
                         prix: "",
@@ -71,7 +106,6 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                         image: null,
                     });
                     setTimeout(() => setValideProduct(''), 5000);
-                    window.location.reload();
                 } else {
                     console.error("Erreur lors de l'ajout d'un produit :", reponse.statusText);
                     setErrorProduct("Erreur lors de l'ajout d'un produit : " + reponse.statusText);
@@ -84,18 +118,17 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
             setTimeout(() => setErrorProduct(''), 5000);
         }
     };
+    //Fin partie Ajout
 
-    const RecupProduct = async () => {
-        try {
-            const reponse = await fetch('http://localhost:8000/produit')
-            const data = await reponse.json();
-            setProduct(data);
-            setAffichage(true);
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
+
+    //Début partie modif
+
+    //Fin partie modif
+
+
+
+    //Début partie Suppression
     const handleDeleteProduct = async (productId) => {
         try {
             const deleteProductResponse = await fetch(`http://localhost:8000/produit/${productId}`, {
@@ -118,6 +151,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
             setTimeout(() => setErrorDelete(''), 5000);
         }
     };
+    //Fin partie Suppression
 
     useEffect(() => {
         RecupProduct();
@@ -136,7 +170,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                     type="text"
                                     placeholder="Nom du produit"
                                     value={newDataProduct.nom}
-                                    onChange={(e) => handleInputChangeProduct('nom', e.target.value)}
+                                    onChange={(e) => handleInputChangeAddProduct('nom', e.target.value)}
                                 />
                             </Col>
                             <Col className='mb-2' xs={12} md={4} xl={3}>
@@ -145,7 +179,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                     type="number"
                                     placeholder="Prix du produit"
                                     value={newDataProduct.prix}
-                                    onChange={(e) => handleInputChangeProduct('prix', e.target.value)}
+                                    onChange={(e) => handleInputChangeAddProduct('prix', e.target.value)}
                                 />
                             </Col>
                             <Col className='mb-2' xs={12} md={4} xl={3}>
@@ -154,7 +188,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                     type="number"
                                     placeholder="Quantité du produit"
                                     value={newDataProduct.quantite}
-                                    onChange={(e) => handleInputChangeProduct('quantite', e.target.value)}
+                                    onChange={(e) => handleInputChangeAddProduct('quantite', e.target.value)}
                                 />
                             </Col>
                             <Col className='mb-2' xs={12} md={4} xl={3}>
@@ -163,7 +197,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                     type="text"
                                     placeholder="Description du produit"
                                     value={newDataProduct.description}
-                                    onChange={(e) => handleInputChangeProduct('description', e.target.value)}
+                                    onChange={(e) => handleInputChangeAddProduct('description', e.target.value)}
                                 />
                             </Col>
                             <Col className='mb-2' xs={12} md={4} xl={3}>
@@ -172,23 +206,25 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                     <Form.Control
                                         type="file"
                                         accept=".png, .jpg, .jpeg"
-                                        onChange={(e) => handleInputChangeProduct('image', e.target.files[0])}
+                                        onChange={(e) => handleInputChangeAddProduct('image', e.target.files[0])}
                                     />
                                 </Form.Group>
                             </Col>
                         </Row>
-                        <Button className='btn-good' onClick={handlAddProduct}>Ajouter</Button>
+                        <Button className='btn-good' onClick={handleAddProduct}>Ajouter</Button>
                         {errorProduct && <p className='error'>{errorProduct}</p>}
                         {valideProduct && <p className='success'>{valideProduct}</p>}
                     </Form>
                 </Col>
                 <Col className='mb-5' xs={12}>
                     <h2>Liste des produits</h2>
+                    {errorDelete && <p className='error'>{errorDelete}</p>}
+                    {valideDelete && <p className='success'>{valideDelete}</p>}
                     {Product.length > 0 ? (
                         <Row>
                             {Product.map((product) => (
                                 <Col key={product.id} xs={12} md={6} lg={4} xxl={3}>
-                                    <Card style={{ width: '18rem', margin: '10px' }}>
+                                    <Card className="d-flex align-items-center justify-content-center mb-2">
                                         {product.image_path && (
                                             <Card.Img
                                                 variant="top"
@@ -198,14 +234,17 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                         )}
                                         <Card.Body>
                                             <Card.Title>{product.nom}</Card.Title>
+                                            <ListGroup variant="flush">
+                                                <ListGroup.Item>Prix : {product.prix} €</ListGroup.Item>
+                                                <ListGroup.Item>Quantité : {product.quantite}</ListGroup.Item>
+                                                <ListGroup.Item>Description : {product.description}</ListGroup.Item>
+                                            </ListGroup>
                                             <Button
-                                                className='btn-delete'
+                                                className='btn-delete m-2'
                                                 onClick={() => handleDeleteProduct(product.id)}
-                                            >
-                                                Supprimer
+                                            >Supprimer
                                             </Button>
-                                            {errorDelete && <p className='error'>{errorDelete}</p>}
-                                            {valideDelete && <p className='success'>{valideDelete}</p>}
+                                            {/* Bouton qui affiche le formulaire de modification */}
                                         </Card.Body>
                                     </Card>
                                 </Col>

@@ -53,6 +53,7 @@ app.get("/", (req, res) => {
     res.end("<h1> Page d'accueil <h1> "); // On renvoie du code HTML
 });
 
+
 // Route pour ajouter un utilisateur utilisé dans Connexion.jsx
 app.post('/utilisateur', withDBConnection, async (req, res) => {
     try {
@@ -83,10 +84,8 @@ app.post('/connexion', withDBConnection, async (req, res) => {
         const hashedPassword = rows[0].mot_de_passe;
         const passwordMatch = await bcrypt.compare(mot_de_passe, hashedPassword);
         if (passwordMatch) {
-            // Authentification réussie
             res.status(200).json({ userId: rows[0].id, isAdmin: rows[0].admin, message: "Authentification réussie" });
         } else {
-            // Mot de passe incorrect
             res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
         }
     } catch (err) {
@@ -95,7 +94,7 @@ app.post('/connexion', withDBConnection, async (req, res) => {
     }
 });
 
-// Route pour obtenir un user_name par ID utilisé dans App.jsx
+// Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     try {
@@ -110,6 +109,26 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
     }
 });
 
+
+//Route pour obtenir tous les produits dans AdminProduit.jsx
+app.get('/produit', withDBConnection, async (req, res) => {
+    try {
+        console.log("Lancement de la requête");
+        const [rows, fields] = await req.dbConnection.execute('SELECT * FROM produit');
+
+        // Ajouter le chemin de l'image à chaque produit
+        const productsWithImagePath = rows.map(product => ({
+            ...product,
+            image_path: `../assets/produits/${product.id}.png`,
+        }));
+        console.log(productsWithImagePath);
+        res.status(200).json(productsWithImagePath);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+});
+
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
 app.post('/produit', withDBConnection, upload.single('image'), async (req, res) => {
     try {
@@ -117,9 +136,11 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const image = req.file;
+
         // Utiliser sharp pour redimensionner l'image
         const resizedImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
+
         // Supprimer l'image d'origine après redimensionnement
         await fs.unlink(image.path);
         await req.dbConnection.execute(
@@ -134,24 +155,6 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
     }
 });
 
-//Route pour obtenir tous les produits dans AdminProduit.jsx
-app.get('/produit', withDBConnection, async (req, res) => {
-    try {
-        console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT * FROM produit');
-        // Ajouter le chemin de l'image à chaque produit
-        const productsWithImagePath = rows.map(product => ({
-            ...product,
-            image_path: `../assets/produits/${product.id}.png`,
-        }));
-        console.log(productsWithImagePath);
-        res.status(200).json(productsWithImagePath);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
-    }
-});
-
 //Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
 app.delete('/produit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -162,21 +165,104 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
         if (rows.length === 0) {
             return res.status(404).json({ error: "Produit non trouvé" });
         }
-        // Le produit existe, supprimer le fichier
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath);
-            console.log("Fichier supprimé avec succès");
-        } else {
-            console.log("Le fichier n'existe pas");
-        }
+
         // Procéder à la suppression du produit dans la base de données
         await req.dbConnection.execute('DELETE FROM produit WHERE id = ?', [id]);
+
+        // Supprimer le fichier image associé
+        await fs.unlink(imagePath);
+
         res.status(200).json({ message: "Produit supprimé avec succès" });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Erreur lors de la suppression du produit" });
     }
 });
+
+
+//Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
+app.put('/produit/:id', withDBConnection, upload.single('image'), async (req, res) => {
+    const id = req.params.id;
+    try {
+        // Vérifier si le produit existe avant de le mettre à jour
+        const [existingProduct] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
+
+        if (existingProduct.length === 0) {
+            return res.status(404).json({ error: "Produit non trouvé" });
+        }
+
+        // Produit trouvé, procéder à la mise à jour
+        const { nom, prix, quantite, description, image } = req.body;
+
+        // Si une nouvelle image est fournie, la traiter et mettre à jour le chemin de l'image
+        // if (image) {
+        //     console.log("Chemin de l'image :", image.path);
+        //     const resizedImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
+        //     await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
+        //     // Supprimer l'ancienne image après redimensionnement
+        //     const oldImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
+        //     await fs.unlink(oldImagePath);
+        // }
+
+        // Construire la requête SQL dynamiquement en fonction des champs fournis
+        let updateQuery = 'UPDATE produit SET';
+        const updateFields = [];
+
+        // Vérifier chaque champ et ajouter à la liste s'il est fourni
+        if (nom !== undefined) {
+            updateFields.push(' nom = ?');
+        }
+        if (prix !== undefined) {
+            updateFields.push(' prix = ?');
+        }
+        if (quantite !== undefined) {
+            updateFields.push(' quantite = ?');
+        }
+        if (description !== undefined) {
+            updateFields.push(' description = ?');
+        }
+
+        // Combiner les champs dans la requête SQL
+        updateQuery += updateFields.join(',') + ' WHERE id = ?';
+
+        // Construire les valeurs de mise à jour
+        const updateValues = [];
+
+        // Ajouter chaque valeur de champ à la liste s'il est fourni
+        if (nom !== undefined) {
+            updateValues.push(nom);
+        }
+        if (prix !== undefined) {
+            updateValues.push(prix);
+        }
+        if (quantite !== undefined) {
+            updateValues.push(quantite);
+        }
+        if (description !== undefined) {
+            updateValues.push(description);
+        }
+
+        // Ajouter la valeur de l'ID à la fin du tableau
+        updateValues.push(id);
+
+        // Effectuer la mise à jour dans la base de données
+        await req.dbConnection.execute(updateQuery, updateValues);
+
+        res.status(200).json({ message: "Produit mis à jour avec succès" });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de la mise à jour du produit" });
+    }
+});
+
+
+
+
+
+
+
+
 
 
 
