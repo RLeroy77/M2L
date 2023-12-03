@@ -183,6 +183,7 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
 app.put('/produit/:id', withDBConnection, upload.single('image'), async (req, res) => {
     const id = req.params.id;
+    const imagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
     try {
         // Vérifier si le produit existe avant de le mettre à jour
         const [existingProduct] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
