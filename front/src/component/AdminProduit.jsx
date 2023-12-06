@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
-import images from './images';
 import '../style/AdminProduit.css';
 
 
@@ -37,7 +36,6 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         prix: "",
         quantite: "",
         description: "",
-        image: null,
     });
     const [selectedProductId, setSelectedProductId] = useState(null);
 
@@ -225,13 +223,11 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                             {Product.map((product) => (
                                 <Col key={product.id} xs={12} md={6} lg={4} xxl={3}>
                                     <Card className="d-flex align-items-center justify-content-center mb-2">
-                                        {product.image_path && (
-                                            <Card.Img
-                                                variant="top"
-                                                src={images.find((image) => image.includes(product.id))}
-                                                alt={product.nom}
-                                            />
-                                        )}
+                                        <Card.Img
+                                            variant="top"
+                                            src={process.env.PUBLIC_URL + `/images/produits/${product.id}.png`}
+                                            alt={product.nom}
+                                        />
                                         <Card.Body>
                                             <Card.Title>{product.nom}</Card.Title>
                                             <ListGroup variant="flush">

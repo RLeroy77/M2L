@@ -35,7 +35,7 @@ const withDBConnection = async (req, res, next) => {
 // Configuration de multer pour gérer les téléchargements de fichiers
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.resolve(__dirname, '../front/src/assets/produits'));
+        cb(null, path.resolve(__dirname, '../front/public/images/produits'));
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + '.png');
@@ -94,6 +94,7 @@ app.post('/connexion', withDBConnection, async (req, res) => {
     }
 });
 
+
 // Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -138,7 +139,7 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
         const image = req.file;
 
         // Utiliser sharp pour redimensionner l'image
-        const resizedImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
+        const resizedImagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
 
         // Supprimer l'image d'origine après redimensionnement
@@ -158,7 +159,7 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
 //Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
 app.delete('/produit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
-    const imagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
+    const imagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
     try {
         // Vérifier si le produit existe avant de le supprimer
         const [rows] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
@@ -181,9 +182,8 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
 
 
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
-app.put('/produit/:id', withDBConnection, upload.single('image'), async (req, res) => {
+app.put('/produit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
-    const imagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
     try {
         // Vérifier si le produit existe avant de le mettre à jour
         const [existingProduct] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
@@ -193,17 +193,7 @@ app.put('/produit/:id', withDBConnection, upload.single('image'), async (req, re
         }
 
         // Produit trouvé, procéder à la mise à jour
-        const { nom, prix, quantite, description, image } = req.body;
-
-        // Si une nouvelle image est fournie, la traiter et mettre à jour le chemin de l'image
-        // if (image) {
-        //     console.log("Chemin de l'image :", image.path);
-        //     const resizedImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
-        //     await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
-        //     // Supprimer l'ancienne image après redimensionnement
-        //     const oldImagePath = path.join(__dirname, '../front/src/assets/produits', `${id}.png`);
-        //     await fs.unlink(oldImagePath);
-        // }
+        const { nom, prix, quantite, description } = req.body;
 
         // Construire la requête SQL dynamiquement en fonction des champs fournis
         let updateQuery = 'UPDATE produit SET';
