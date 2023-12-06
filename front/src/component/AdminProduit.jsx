@@ -57,7 +57,6 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
     };
 
     //Début partie Ajout
-
     // Gére les changements d'entrée dans le formulaire de création et de maintenir l'état du formulaire à jour en fonction des modifications de l'utilisateur
     const handleInputChangeAddProduct = (fieldName, value) => {
         setNewDataProduct({ ...newDataProduct, [fieldName]: value });
@@ -121,7 +120,88 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
 
 
     //Début partie modif
+    // Gére les changements d'entrée dans le formulaire de modification et de maintenir l'état du formulaire à jour en fonction des modifications de l'utilisateur
+    const handleInputChangeEditProduct = (fieldName, value) => {
+        setEditDataProduct({ ...editDataProduct, [fieldName]: value });
+    };
 
+    // Vérifie si au moins un champ du formulaire d'ajout est rempli
+    const validateFieldsEditProduct = (data) => {
+        const filledFields = Object.keys(data).filter((field) => data[field]);
+        if (filledFields.length === 0) {
+            setErrorEdit('Veuillez remplir au moins un champ.');
+            setTimeout(() => setErrorEdit(''), 5000);
+            return false;
+        }
+        setErrorEdit('');
+        return true;
+    };
+
+    // Fonction pour gérer la soumission du formulaire de modification
+    const handleEditProduct = async () => {
+        try {
+            if (validateFieldsEditProduct(editDataProduct)) {
+                const requestBody = {};
+                // Ajoute uniquement les champs modifiés au corps de la requête
+                if (editDataProduct.nom) requestBody.nom = editDataProduct.nom;
+                if (editDataProduct.prix) requestBody.prix = editDataProduct.prix;
+                if (editDataProduct.quantite) requestBody.quantite = editDataProduct.quantite;
+                if (editDataProduct.description) requestBody.description = editDataProduct.description;
+
+                const editProductResponse = await fetch(`http://localhost:8000/produit/${selectedProductId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+
+                if (editProductResponse.ok) {
+                    setValideEdit('Produit modifié avec succès');
+                    RecupProduct();
+                    setEditDataProduct({
+                        nom: "",
+                        prix: "",
+                        quantite: "",
+                        description: "",
+                    });
+                    setTimeout(() => setValideEdit(''), 5000);
+                } else {
+                    console.error("Erreur lors de la modification du produit :", editProductResponse.statusText);
+                    setErrorEdit("Erreur lors de la modification du produit : " + editProductResponse.statusText);
+                    setTimeout(() => setErrorEdit(''), 5000);
+                }
+            }
+        } catch (error) {
+            console.error("Erreur lors de la modification du produit :", error);
+            setErrorEdit("Erreur lors de la modification du produit : " + error);
+            setTimeout(() => setErrorEdit(''), 5000);
+        }
+    };
+
+    // Fonction pour afficher le formulaire de modification
+    const showEditForm = (productId) => {
+        // Mettre à jour l'ID du produit sélectionné
+        setSelectedProductId(productId);
+        // Mettre à jour les données du formulaire de modification avec des valeurs vides
+        setEditDataProduct({
+            nom: "",
+            prix: "",
+            quantite: "",
+            description: "",
+        });
+    };
+
+    // Fonction pour annuler la modification et fermer le formulaire
+    const cancelEdit = () => {
+        setSelectedProductId(null);
+        setEditDataProduct({
+            nom: "",
+            prix: "",
+            quantite: "",
+            description: "",
+        });
+    };
     //Fin partie modif
 
 
@@ -236,11 +316,61 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                                 <ListGroup.Item>Description : {product.description}</ListGroup.Item>
                                             </ListGroup>
                                             <Button
+                                                className='btn-good m-2'
+                                                onClick={() => showEditForm(product.id)}
+                                            >Modifier
+                                            </Button>
+                                            <Button
                                                 className='btn-delete m-2'
                                                 onClick={() => handleDeleteProduct(product.id)}
                                             >Supprimer
                                             </Button>
-                                            {/* Bouton qui affiche le formulaire de modification */}
+                                            {selectedProductId === product.id && (
+                                                <Form>
+                                                    <Row>
+                                                        <Col className='mb-2' xs={12}>
+                                                            <InputField
+                                                                label="Nom"
+                                                                type="text"
+                                                                placeholder="Nom du produit"
+                                                                value={editDataProduct.nom}
+                                                                onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
+                                                            />
+                                                        </Col>
+                                                        <Col className='mb-2' xs={12}>
+                                                            <InputField
+                                                                label="Prix"
+                                                                type="number"
+                                                                placeholder="Prix du produit"
+                                                                value={editDataProduct.prix}
+                                                                onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
+                                                            />
+                                                        </Col>
+                                                        <Col className='mb-2' xs={12}>
+                                                            <InputField
+                                                                label="Quantité"
+                                                                type="number"
+                                                                placeholder="Quantité du produit"
+                                                                value={editDataProduct.quantite}
+                                                                onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
+                                                            />
+                                                        </Col>
+                                                        <Col className='mb-2' xs={12}>
+                                                            <InputField
+                                                                label="Description"
+                                                                type="text"
+                                                                placeholder="Description du produit"
+                                                                value={editDataProduct.description}
+                                                                onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                    <Button className='btn-delete m-2' onClick={cancelEdit}>Annuler</Button>
+                                                    <Button className='btn-good m-2' onClick={handleEditProduct}>Enregister</Button>
+                                                    {errorEdit && <p className='error'>{errorEdit}</p>}
+                                                    {valideEdit && <p className='success'>{valideEdit}</p>}
+                                                </Form>
+                                            )}
                                         </Card.Body>
                                     </Card>
                                 </Col>

@@ -120,7 +120,7 @@ app.get('/produit', withDBConnection, async (req, res) => {
         // Ajouter le chemin de l'image à chaque produit
         const productsWithImagePath = rows.map(product => ({
             ...product,
-            image_path: `../assets/produits/${product.id}.png`,
+            image_path: `../front/public/images/produits/${product.id}.png`,
         }));
         console.log(productsWithImagePath);
         res.status(200).json(productsWithImagePath);
@@ -141,6 +141,7 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
         // Utiliser sharp pour redimensionner l'image
         const resizedImagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
+
 
         // Supprimer l'image d'origine après redimensionnement
         await fs.unlink(image.path);
@@ -184,6 +185,7 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
 app.put('/produit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
+    console.log(req.body);
     try {
         // Vérifier si le produit existe avant de le mettre à jour
         const [existingProduct] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
@@ -215,6 +217,7 @@ app.put('/produit/:id', withDBConnection, async (req, res) => {
 
         // Combiner les champs dans la requête SQL
         updateQuery += updateFields.join(',') + ' WHERE id = ?';
+        console.log(updateQuery);
 
         // Construire les valeurs de mise à jour
         const updateValues = [];
