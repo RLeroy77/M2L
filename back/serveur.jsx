@@ -95,6 +95,7 @@ app.post('/connexion', withDBConnection, async (req, res) => {
 });
 
 
+
 // Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -111,19 +112,14 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 });
 
 
+
 //Route pour obtenir tous les produits dans AdminProduit.jsx
 app.get('/produit', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT * FROM produit');
-
-        // Ajouter le chemin de l'image à chaque produit
-        const productsWithImagePath = rows.map(product => ({
-            ...product,
-            image_path: `../front/public/images/produits/${product.id}.png`,
-        }));
-        console.log(productsWithImagePath);
-        res.status(200).json(productsWithImagePath);
+        const [rows, fields] = await req.dbConnection.execute('SELECT id, nom, prix, quantite, description FROM produit');
+        console.log(rows);
+        res.status(200).json(rows);
     } catch (error) {
         console.log(error);
         res.status(500).send("Erreur lors de l'exécution de la requête");
@@ -137,19 +133,15 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const image = req.file;
-
         // Utiliser sharp pour redimensionner l'image
         const resizedImagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
-
-
         // Supprimer l'image d'origine après redimensionnement
         await fs.unlink(image.path);
         await req.dbConnection.execute(
             'INSERT INTO produit (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
             [id, nom, prix, quantite, description, date_creation]
         );
-
         res.status(200).json({ message: "Produit ajouté avec succès" });
     } catch (err) {
         console.log(err);
@@ -157,50 +149,20 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
     }
 });
 
-//Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
-app.delete('/produit/:id', withDBConnection, async (req, res) => {
-    const id = req.params.id;
-    const imagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
-    try {
-        // Vérifier si le produit existe avant de le supprimer
-        const [rows] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
-        if (rows.length === 0) {
-            return res.status(404).json({ error: "Produit non trouvé" });
-        }
-
-        // Procéder à la suppression du produit dans la base de données
-        await req.dbConnection.execute('DELETE FROM produit WHERE id = ?', [id]);
-
-        // Supprimer le fichier image associé
-        await fs.unlink(imagePath);
-
-        res.status(200).json({ message: "Produit supprimé avec succès" });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Erreur lors de la suppression du produit" });
-    }
-});
-
-
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
 app.put('/produit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
-    console.log(req.body);
     try {
         // Vérifier si le produit existe avant de le mettre à jour
-        const [existingProduct] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
-
+        const [existingProduct] = await req.dbConnection.execute('SELECT id FROM produit WHERE id = ?', [id]);
         if (existingProduct.length === 0) {
             return res.status(404).json({ error: "Produit non trouvé" });
         }
-
         // Produit trouvé, procéder à la mise à jour
         const { nom, prix, quantite, description } = req.body;
-
         // Construire la requête SQL dynamiquement en fonction des champs fournis
         let updateQuery = 'UPDATE produit SET';
         const updateFields = [];
-
         // Vérifier chaque champ et ajouter à la liste s'il est fourni
         if (nom !== undefined) {
             updateFields.push(' nom = ?');
@@ -214,14 +176,11 @@ app.put('/produit/:id', withDBConnection, async (req, res) => {
         if (description !== undefined) {
             updateFields.push(' description = ?');
         }
-
         // Combiner les champs dans la requête SQL
         updateQuery += updateFields.join(',') + ' WHERE id = ?';
         console.log(updateQuery);
-
         // Construire les valeurs de mise à jour
         const updateValues = [];
-
         // Ajouter chaque valeur de champ à la liste s'il est fourni
         if (nom !== undefined) {
             updateValues.push(nom);
@@ -235,44 +194,124 @@ app.put('/produit/:id', withDBConnection, async (req, res) => {
         if (description !== undefined) {
             updateValues.push(description);
         }
-
         // Ajouter la valeur de l'ID à la fin du tableau
         updateValues.push(id);
-
         // Effectuer la mise à jour dans la base de données
         await req.dbConnection.execute(updateQuery, updateValues);
-
         res.status(200).json({ message: "Produit mis à jour avec succès" });
-
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Erreur lors de la mise à jour du produit" });
     }
 });
 
+//Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
+app.delete('/produit/:id', withDBConnection, async (req, res) => {
+    const id = req.params.id;
+    const imagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
+    try {
+        // Vérifier si le produit existe avant de le supprimer
+        const [rows] = await req.dbConnection.execute('SELECT id FROM produit WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Produit non trouvé" });
+        }
+        // Procéder à la suppression du produit dans la base de données
+        await req.dbConnection.execute('DELETE FROM produit WHERE id = ?', [id]);
+        // Supprimer le fichier image associé
+        await fs.unlink(imagePath);
+        res.status(200).json({ message: "Produit supprimé avec succès" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de la suppression du produit" });
+    }
+});
 
 
 
-
-
-
-
-
-
-
-// Route pour obtenir toutes les utilisateurs 
+// Route pour obtenir toutes les utilisateurs dans AdminUser.jsx
 app.get('/utilisateur', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT * FROM utilisateur');
+        const [rows, fields] = await req.dbConnection.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
         console.log(rows);
         res.status(200).json(rows);
-
     } catch (err) {
         console.log(err);
         res.status(500).send("Erreur lors de l'exécution de la requête");
     }
 });
+
+// Route pour mettre à jour le rôle d'un utilisateur fonction de son ID dans AdminUser.jsx
+app.put('/utilisateur/role/:id', withDBConnection, async (req, res) => {
+    const id = req.params.id;
+    try {
+        // Vérifier si l'utilisateur existe avant de le mettre à jour
+        const [existingUser] = await req.dbConnection.execute('SELECT id FROM utilisateur WHERE id = ?', [id]);
+        if (existingUser.length === 0) {
+            return res.status(404).json({ error: "Utilisateur non trouvé" });
+        }
+        // Récupérer la nouvelle valeur pour le rôle (admin) depuis le corps de la requête
+        const newAdminValue = req.body.admin;
+        // Mettre à jour le rôle de l'utilisateur dans la base de données
+        await req.dbConnection.execute('UPDATE utilisateur SET admin = ? WHERE id = ?', [newAdminValue, id]);
+        // Envoyer une réponse de succès
+        res.status(200).json({ message: "Rôle utilisateur mis à jour avec succès" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur lors de la mise à jour du rôle" });
+    }
+});
+
+// Route pour supprimer un utilisateur en fonction de son ID dans AdminUser.jsx
+app.delete('/utilisateur/:id', withDBConnection, async (req, res) => {
+    const id = req.params.id;
+    try {
+        // Vérifier si l'utilisateur existe avant de le supprimer
+        const [rows] = await req.dbConnection.execute('SELECT id FROM utilisateur WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Utilisateur non trouvé" });
+        }
+        // L'utilisateur existe, procéder à la suppression
+        await req.dbConnection.execute('DELETE FROM utilisateur WHERE id = ?', [id]);
+        res.status(200).json({ message: "Utilisateur supprimé avec succès" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur" });
+    }
+});
+
+
+
+app.listen(8000, () => {
+    console.log("Serveur à l'écoute")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -309,29 +348,3 @@ app.put('/utilisateur/:id', withDBConnection, async (req, res) => {
         res.status(500).json({ error: "Erreur lors de la mise à jour de l'utilisateur" });
     }
 });
-
-
-// Route pour supprimer un utilisateur par ID
-app.delete('/utilisateur/:id', withDBConnection, async (req, res) => {
-    const id = req.params.id;
-    try {
-        // Vérifier si l'utilisateur existe avant de le supprimer
-        const [rows] = await req.dbConnection.execute('SELECT * FROM utilisateur WHERE id = ?', [id]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ error: "Utilisateur non trouvé" });
-        }
-
-        // L'utilisateur existe, procéder à la suppression
-        await req.dbConnection.execute('DELETE FROM utilisateur WHERE id = ?', [id]);
-        res.status(200).json({ message: "Utilisateur supprimé avec succès" });
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur" });
-    }
-});
-
-app.listen(8000, () => {
-    console.log("Serveur à l'écoute")
-})

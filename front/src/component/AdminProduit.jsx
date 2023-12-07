@@ -14,8 +14,6 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 
 function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
     const [Product, setProduct] = useState([]);
-    const [affichage, setAffichage] = useState(false);
-
 
     //Pour la création
     const [errorProduct, setErrorProduct] = useState('');
@@ -50,7 +48,6 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
             const reponse = await fetch('http://localhost:8000/produit')
             const data = await reponse.json();
             setProduct(data);
-            setAffichage(true);
         } catch (error) {
             console.log(error);
         }
@@ -68,7 +65,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         for (const field of requiredFields) {
             if (!data[field]) {
                 setErrorProduct(`Veuillez remplir le champ ${field}.`);
-                setTimeout(() => setErrorProduct(''), 5000);
+                setTimeout(() => setErrorProduct(''), 2500);
                 return false;
             }
         }
@@ -102,17 +99,17 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                         description: "",
                         image: null,
                     });
-                    setTimeout(() => setValideProduct(''), 5000);
+                    setTimeout(() => setValideProduct(''), 2500);
                 } else {
                     console.error("Erreur lors de l'ajout d'un produit :", reponse.statusText);
                     setErrorProduct("Erreur lors de l'ajout d'un produit : " + reponse.statusText);
-                    setTimeout(() => setErrorProduct(''), 5000);
+                    setTimeout(() => setErrorProduct(''), 2500);
                 }
             }
         } catch (error) {
             console.error("Erreur lors de l'ajout d'un produit :", error);
             setErrorProduct("Erreur lors de l'ajout d'un produit : " + error);
-            setTimeout(() => setErrorProduct(''), 5000);
+            setTimeout(() => setErrorProduct(''), 2500);
         }
     };
     //Fin partie Ajout
@@ -130,7 +127,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         const filledFields = Object.keys(data).filter((field) => data[field]);
         if (filledFields.length === 0) {
             setErrorEdit('Veuillez remplir au moins un champ.');
-            setTimeout(() => setErrorEdit(''), 5000);
+            setTimeout(() => setErrorEdit(''), 2500);
             return false;
         }
         setErrorEdit('');
@@ -165,17 +162,17 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                         quantite: "",
                         description: "",
                     });
-                    setTimeout(() => setValideEdit(''), 5000);
+                    setTimeout(() => setValideEdit(''), 2500);
                 } else {
                     console.error("Erreur lors de la modification du produit :", editProductResponse.statusText);
                     setErrorEdit("Erreur lors de la modification du produit : " + editProductResponse.statusText);
-                    setTimeout(() => setErrorEdit(''), 5000);
+                    setTimeout(() => setErrorEdit(''), 2500);
                 }
             }
         } catch (error) {
             console.error("Erreur lors de la modification du produit :", error);
             setErrorEdit("Erreur lors de la modification du produit : " + error);
-            setTimeout(() => setErrorEdit(''), 5000);
+            setTimeout(() => setErrorEdit(''), 2500);
         }
     };
 
@@ -217,16 +214,16 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                 const updatedProductList = Product.filter((product) => product.id !== productId);
                 setProduct(updatedProductList);
                 setValideDelete('Produit supprimé avec succès');
-                setTimeout(() => setValideDelete(''), 5000);
+                setTimeout(() => setValideDelete(''), 2500);
             } else {
                 console.error("Erreur lors de la suppression du produit :", deleteProductResponse.statusText);
                 setErrorDelete("Erreur lors de la suppression du produit : " + deleteProductResponse.statusText);
-                setTimeout(() => setErrorDelete(''), 5000);
+                setTimeout(() => setErrorDelete(''), 2500);
             }
         } catch (error) {
             console.error("Une erreur s'est produite :", error);
             setErrorDelete("Erreur lors de la suppression du produit : " + error);
-            setTimeout(() => setErrorDelete(''), 5000);
+            setTimeout(() => setErrorDelete(''), 2500);
         }
     };
     //Fin partie Suppression
@@ -238,7 +235,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
     return (
         <Container fluid="">
             <Row>
-                <Col className='mb-5' xs={12}>
+                <Col className='m-3' xs={12}>
                     <h2>Formulaire d'ajout de produit</h2>
                     <Form encType="multipart/form-data">
                         <Row>
@@ -294,7 +291,7 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                         {valideProduct && <p className='success'>{valideProduct}</p>}
                     </Form>
                 </Col>
-                <Col className='mb-5' xs={12}>
+                <Col className='m-3' xs={12}>
                     <h2>Liste des produits</h2>
                     {errorDelete && <p className='error'>{errorDelete}</p>}
                     {valideDelete && <p className='success'>{valideDelete}</p>}
@@ -365,8 +362,16 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
                                                             />
                                                         </Col>
                                                     </Row>
-                                                    <Button className='btn-delete m-2' onClick={cancelEdit}>Annuler</Button>
-                                                    <Button className='btn-good m-2' onClick={handleEditProduct}>Enregister</Button>
+                                                    <Button
+                                                        className='btn-delete m-2'
+                                                        onClick={cancelEdit}
+                                                    >Annuler
+                                                    </Button>
+                                                    <Button
+                                                        className='btn-good m-2'
+                                                        onClick={handleEditProduct}
+                                                    >Enregister
+                                                    </Button>
                                                     {errorEdit && <p className='error'>{errorEdit}</p>}
                                                     {valideEdit && <p className='success'>{valideEdit}</p>}
                                                 </Form>

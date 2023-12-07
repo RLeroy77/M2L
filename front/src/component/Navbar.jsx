@@ -46,10 +46,9 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
                         {userId ? (
                             <NavDropdown title={userName} id="collapsible-nav-dropdown">
                                 <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="">Panier</NavDropdown.Item>
                                 {isAdmin === "1" && (
                                     <>
-                                        <NavDropdown.Item as={Link} to="/">Gestion des comptes</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/AdminUser">Gestion des comptes</NavDropdown.Item>
                                         <NavDropdown.Item as={Link} to="/AdminProduit">Gestion des produits</NavDropdown.Item>
                                     </>
                                 )}

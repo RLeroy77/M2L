@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : mer. 06 déc. 2023 à 15:38
+-- Généré le : jeu. 07 déc. 2023 à 17:40
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `produit` (
 --
 
 INSERT INTO `produit` (`id`, `nom`, `prix`, `quantite`, `description`, `date_creation`, `date_mise_a_jour`) VALUES
-('8efa72d9-38cd-4455-90b4-d3989d30ce12', 'Produit 1', '1.00', 10, 'C\'est le produit 1', '2023-12-06 14:31:15', '2023-12-06 15:31:32');
+('8efa72d9-38cd-4455-90b4-d3989d30ce12', 'Produit 1', '1.00', 10, 'C\'est le produit 1', '2023-12-06 14:31:15', '2023-12-07 11:35:44');
 
 -- --------------------------------------------------------
 
@@ -91,11 +91,14 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `nom`, `prenom`, `user_name`, `date_creation`, `date_mise_a_jour`, `mot_de_passe`, `admin`) VALUES
-('1b98b72d-84d6-11ee-b4ea-74563c60cbe5', 'Leroy', 'Rémy', 'RLeroy', '2023-11-16 23:16:01', '2023-11-16 23:53:52', '$2y$10$LsuYiA7zGuaGd8VJhuvDju69yaVXy0N/r8wL99idl.xTC8gToU2kW', 0),
-('46833c5a-84d9-11ee-b4ea-74563c60cbe5', 'Leroy', 'Rémy', 'RDieFox', '2023-11-16 23:38:42', '2023-11-16 23:53:46', '$2y$10$x0/U24Fd23dm7fdtbgzGBerEdBuHTyl574Psh.TXICvXKWDmoomRK', 1),
-('c678d7bb-eba2-4aa6-ae4b-0bcc56f8f88c', 'Nom Test', 'Prénom Test', 'User Test', '2023-11-19 16:50:10', '2023-11-19 17:50:10', '$2b$10$sgOHC7exQIBCzTZHEn5RwuRprKNGtOrYY9oCpv6tNFKSccbpYDy1e', 0),
-('dba007f3-82fc-47b7-9766-465a88b6dd93', 'n test', 'p test', 'u test', '2023-11-20 12:05:50', '2023-11-22 15:53:47', '$2b$10$e66K.e0jiMVjhk1Kchy0bOBMINOcuQEQgkHNQOmieQi1v3lJ7dMDq', 1),
-('c5ec1a29-92dc-4d1d-ab93-223cbc0aeb80', 'testn', 'testp', 'testu', '2023-11-22 14:38:03', '2023-11-22 15:38:03', '$2b$10$96NdrIe3l.9yn2hmgucVsO2NuW3Sez91r8DBL69/D9LFDP2zhBQ0C', 0);
+('1b98b72d-84d6-11ee-b4ea-74563c60cbe5', 'Leroy', 'Rémy', 'RLeroy', '2023-11-16 23:16:01', '2023-12-07 14:18:39', '$2y$10$LsuYiA7zGuaGd8VJhuvDju69yaVXy0N/r8wL99idl.xTC8gToU2kW', 1),
+('46833c5a-84d9-11ee-b4ea-74563c60cbe5', 'Leroy', 'Rémy', 'RDieFox', '2023-11-16 23:38:42', '2023-12-07 11:47:17', '$2y$10$x0/U24Fd23dm7fdtbgzGBerEdBuHTyl574Psh.TXICvXKWDmoomRK', 1),
+('dba007f3-82fc-47b7-9766-465a88b6dd93', 'n test', 'p test', 'u test', '2023-11-20 12:05:50', '2023-12-07 10:22:19', '$2b$10$e66K.e0jiMVjhk1Kchy0bOBMINOcuQEQgkHNQOmieQi1v3lJ7dMDq', 1),
+('495a6096-f390-4df5-97fe-8457984c0842', 'Test 1', 'Test', '1', '2023-12-07 10:50:04', '2023-12-07 11:50:04', '$2b$10$NXlx36C4lS8mj.tPKCWnue.vAdomQgSuccHGs3rUnhib6Frzej0cC', 0),
+('807cedec-31ac-445e-be61-2af1242174c4', 'Test 2', 'Test', '2', '2023-12-07 10:50:15', '2023-12-07 11:50:15', '$2b$10$PcLdiXWZPFOcGQB04chr.u3IN7NGpptCz0MLnERIvpFkgestWxoXy', 0),
+('cf79595f-4113-4b9c-9f90-5f568d878643', 'Test 3', 'Test', '3', '2023-12-07 10:50:29', '2023-12-07 11:50:29', '$2b$10$PFwZejUgHZfVr8DKl7mrBerlVFV9nEM6M94SdJ/Ex.9FJn2qSI4nm', 0),
+('06746613-4f97-47f7-9be8-c8edf1e816ab', 'Test 4', 'Test', '4', '2023-12-07 10:50:45', '2023-12-07 11:50:45', '$2b$10$QynW6XtqaV/fiI8lcf8lSee0s63VbS.sn.O6Q/WRvATr/UgLUW0QO', 0),
+('811e50c8-bce8-4269-a739-f931204e3d8a', 'Test 5', 'Test', '5', '2023-12-07 10:50:58', '2023-12-07 11:50:58', '$2b$10$7KWCS14LiMgBgoQsM1iZt.bMc6Igz5A5RbViXQKCqMHEdmfypJ2L6', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

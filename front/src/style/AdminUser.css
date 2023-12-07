@@ -49,3 +49,46 @@
 .success {
     color: green !important;
 }
+
+/* Ajoutez ces classes à votre feuille de style CSS */
+
+/* Style général de la pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+/* Style des éléments de la pagination */
+.pagination .page-item {
+    display: inline-block;
+}
+
+/* Style des liens et boutons de la pagination */
+.pagination .page-link {
+    color: #f6c614;
+    /* Couleur du texte */
+    background-color: #15161d;
+    /* Couleur de fond */
+    border: 1px solid #f6c614;
+    /* Bordure */
+}
+
+/* Style des liens et boutons actifs de la pagination */
+.pagination .page-item.active .page-link {
+    background-color: #f6c614;
+    /* Couleur de fond pour l'élément actif */
+    color: #15161d;
+    /* Couleur du texte pour l'élément actif */
+    border-color: #f6c614;
+    /* Couleur de bordure pour l'élément actif */
+}
+
+/* Style des liens et boutons au survol de la pagination */
+.pagination .page-link:hover {
+    background-color: #15161d;
+    /* Couleur de fond au survol */
+    color: #f6c614;
+    /* Couleur du texte au survol */
+    border-color: #15161d;
+    /* Couleur de bordure au survol */
+}

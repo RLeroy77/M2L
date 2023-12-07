@@ -7,6 +7,7 @@ import Shop from './Shop';
 import Connexion from './Connexion';
 import Profil from './Profil'
 import AdminProduit from './AdminProduit';
+import AdminUser from './AdminUser';
 import '../style/App.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path='/connexion' element={<Connexion userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
           <Route path='/profil' element={<Profil userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
           <Route path='/AdminProduit' element={<AdminProduit userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
+          <Route path='/AdminUser' element={<AdminUser userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
         </Routes>
       </div>
       <Footer />
