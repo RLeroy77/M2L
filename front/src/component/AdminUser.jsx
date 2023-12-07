@@ -11,12 +11,7 @@ export default function AdminUser() {
 
     //Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const [usersPerPage] = useState(6); // Nombre d'utilisateurs par page
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = User.slice(indexOfFirstUser, indexOfLastUser);
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+    const [usersPerPage, setUsersPerPage] = useState(6);
     //Pour la modification
     const [errorRole, setErrorRole] = useState('');
     const [validRole, setValideRole] = useState('');
@@ -105,8 +100,40 @@ export default function AdminUser() {
     };
     //Fin partie Suppression
 
+    //Début partie Pagination
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = User.slice(indexOfFirstUser, indexOfLastUser);
+    const pageCount = Math.ceil(User.length / usersPerPage);
+    const pageArray = pageCount > 0 ? [...Array(pageCount)] : [];
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+    const adjustUsersPerPage = () => {
+        const screenHeight = window.innerHeight;
+        // Ajuster le nombre d'éléments par page en fonction de la hauteur de l'écran
+        if (screenHeight < 600) {
+            setUsersPerPage(3);
+        } else if (screenHeight < 900) {
+            setUsersPerPage(7);
+        } else {
+            setUsersPerPage(8);
+        }
+    };
+    //Fin partie Pagination
+
     useEffect(() => {
         RecupUser();
+        // Appeler la fonction d'ajustement au chargement initial de la page
+        adjustUsersPerPage();
+
+        // Ajouter un écouteur d'événements pour détecter les changements de taille d'écran
+        window.addEventListener('resize', adjustUsersPerPage);
+
+        // Nettoyer l'écouteur d'événements lors du démontage du composant
+        return () => {
+            window.removeEventListener('resize', adjustUsersPerPage);
+        };
     }, []);
 
     return (
@@ -118,7 +145,7 @@ export default function AdminUser() {
                     {valideDelete && <p className='success'>{valideDelete}</p>}
                     {User.length > 0 ? (
                         <React.Fragment>
-                            <Table responsive striped bordered hover variant="light">
+                            <Table className='mt-2' responsive striped bordered hover variant="light">
                                 <thead>
                                     <tr className="text-center">
                                         <th>Nom d'utilisateur</th>
@@ -169,8 +196,12 @@ export default function AdminUser() {
                                 </tbody>
                             </Table>
                             <Pagination className="justify-content-center">
-                                {[...Array(Math.ceil(User.length / usersPerPage))].map((_, index) => (
-                                    <Pagination.Item key={index + 1} active={index + 1 === currentPage} onClick={() => paginate(index + 1)}>
+                                {pageArray.map((_, index) => (
+                                    <Pagination.Item
+                                        key={index + 1}
+                                        active={index + 1 === currentPage}
+                                        onClick={() => paginate(index + 1)}
+                                    >
                                         {index + 1}
                                     </Pagination.Item>
                                 ))}
