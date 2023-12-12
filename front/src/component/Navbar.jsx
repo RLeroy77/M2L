@@ -4,7 +4,7 @@ import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import '../style/Navbar.css'
 
-function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
+function MyNavbar({ userId, setUserId, isAdmin}) {
     const navigate = useNavigate();
 
     const handleLogout = () => {

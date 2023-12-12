@@ -12,7 +12,7 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
     );
 };
 
-function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
+function AdminProduit() {
     const [Product, setProduct] = useState([]);
 
     //Pour la création
@@ -26,6 +26,8 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         image: null,
     });
 
+    const [selectedProductId, setSelectedProductId] = useState(null);
+
     //Pour l'édition
     const [errorEdit, setErrorEdit] = useState('');
     const [valideEdit, setValideEdit] = useState('');
@@ -35,7 +37,6 @@ function AdminProduit(userId, setUserId, isAdmin, setIsAdmin) {
         quantite: "",
         description: "",
     });
-    const [selectedProductId, setSelectedProductId] = useState(null);
 
     //Pour la suppression
     const [errorDelete, setErrorDelete] = useState('');

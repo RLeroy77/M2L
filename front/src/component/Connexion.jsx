@@ -12,7 +12,7 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
     );
 };
 
-function Connexion(userId, setUserId, isAdmin, setIsAdmin) {
+function Connexion() {
     localStorage.clear();
     const ls = localStorage;
     const navigate = useNavigate();

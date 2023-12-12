@@ -113,7 +113,7 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 
 
 
-//Route pour obtenir tous les produits dans AdminProduit.jsx
+//Route pour obtenir tous les produits dans AdminProduit.jsx et Shop.jsx
 app.get('/produit', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
@@ -226,6 +226,29 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
     }
 });
 
+
+// Route pour obtenir un produit en fonction de son ID
+app.get('/produit/:id', withDBConnection, async (req, res) => {
+    try {
+        console.log("Lancement de la requête");
+        const productId = req.params.id;
+        const [rows, fields] = await req.dbConnection.execute(
+            'SELECT id, nom, prix, quantite, description FROM produit WHERE id = ?',
+            [productId]
+        );
+
+        if (rows.length === 0) {
+            // Si aucun produit n'est trouvé avec cet ID
+            res.status(404).json({ message: 'Produit non trouvé' });
+        } else {
+            const product = rows[0];
+            res.status(200).json(product);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+});
 
 
 // Route pour obtenir toutes les utilisateurs dans AdminUser.jsx

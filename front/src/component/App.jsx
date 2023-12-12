@@ -8,6 +8,7 @@ import Connexion from './Connexion';
 import Profil from './Profil'
 import AdminProduit from './AdminProduit';
 import AdminUser from './AdminUser';
+import Produit from './Produit';
 import '../style/App.css';
 
 function App() {
@@ -20,15 +21,16 @@ function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Navbar userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
+      <Navbar userId={userId} setUserId={setUserId} isAdmin={isAdmin} />
       <div style={{ flexGrow: 1 }} className='bg-color'>
         <Routes>
-          <Route path='/' element={<Home userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
+          <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
-          <Route path='/connexion' element={<Connexion userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
+          <Route path="/Produit/:productId" element={<Produit userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
+          <Route path='/connexion' element={<Connexion />} />
           <Route path='/profil' element={<Profil userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
-          <Route path='/AdminProduit' element={<AdminProduit userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
-          <Route path='/AdminUser' element={<AdminUser userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
+          <Route path='/AdminProduit' element={<AdminProduit />} />
+          <Route path='/AdminUser' element={<AdminUser />} />
         </Routes>
       </div>
       <Footer />
