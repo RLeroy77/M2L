@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Route, Routes } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +7,7 @@ import '../style/Footer.css'
 function MyFooter() {
     return (
         <footer className="d-flex flex-column py-4 bg-red">
-            <Container>
+            <Container fluid>
                 <Row>
                     <Col xs={12} md={6}>
                         <h5>M2L</h5>

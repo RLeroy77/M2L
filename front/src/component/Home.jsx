@@ -1,5 +1,4 @@
 import React from "react";
-// import { Route, Routes } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 
 function Home() {

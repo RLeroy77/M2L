@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { Route, Routes } from 'react-router-dom';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import '../style/Navbar.css'
