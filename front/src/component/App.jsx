@@ -40,11 +40,11 @@ function App() {
       <div style={{ flexGrow: 1 }} className='bg-color'>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/shop' element={<Shop userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
-          <Route path="/Produit/:productId" element={<Produit userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
-          <Route path='/Panier' element={<Panier />} />
+          <Route path='/shop' element={<Shop userId={userId} isAdmin={isAdmin} />} />
+          <Route path="/Produit/:productId" element={<Produit userId={userId} isAdmin={isAdmin} />} />
+          <Route path='/Panier' element={<Panier userId={userId} isAdmin={isAdmin} />} />
           <Route path='/connexion' element={<Connexion />} />
-          <Route path='/profil' element={<Profil userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />} />
+          <Route path='/profil' element={<Profil userId={userId} isAdmin={isAdmin} />} />
           <Route path='/AdminProduit' element={<AdminProduit />} />
           <Route path='/AdminUser' element={<AdminUser />} />
         </Routes>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
 
-function Profil({ userId, setUserId, isAdmin, setIsAdmin }) {
+function Profil({ userId, isAdmin}) {
 
     useEffect(() => {
     }, [userId]);

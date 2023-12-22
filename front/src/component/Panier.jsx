@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap';
 
-function Panier() {
+function Panier(userId, isAdmin) {
     const ls = localStorage;
     const [Panier, setPanier] = useState([]);
 

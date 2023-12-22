@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, ListGroup, Button } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
 
-export default function Produit() {
+export default function Produit(userId, isAdmin) {
     const ls = localStorage;
     const { productId } = useParams(); // Utilisation de useParams directement
     const [product, setProduct] = useState(null);
@@ -46,7 +46,7 @@ export default function Produit() {
         }
         // Mettre à jour le panier dans le localStorage
         ls.setItem('panier', JSON.stringify(cart));
-        setPanier(cart); 
+        setPanier(cart);
     };
 
 
