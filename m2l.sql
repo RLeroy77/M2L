@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : jeu. 07 déc. 2023 à 17:40
+-- Généré le : ven. 22 déc. 2023 à 09:52
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -20,26 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `m2l`
 --
-
--- --------------------------------------------------------
-
---
--- Structure de la table `commande`
---
-
-DROP TABLE IF EXISTS `commande`;
-CREATE TABLE IF NOT EXISTS `commande` (
-  `id` char(36) NOT NULL,
-  `id_user` char(36) DEFAULT NULL,
-  `id_produit` char(36) DEFAULT NULL,
-  `prix_total` decimal(10,2) DEFAULT NULL,
-  `valider` tinyint(1) DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_mise_a_jour` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `id_user` (`id_user`),
-  KEY `id_produit` (`id_produit`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -64,6 +44,10 @@ CREATE TABLE IF NOT EXISTS `produit` (
 --
 
 INSERT INTO `produit` (`id`, `nom`, `prix`, `quantite`, `description`, `date_creation`, `date_mise_a_jour`) VALUES
+('bca5f763-7123-444c-8afc-0466d3271187', 'Produit 5', '5.00', 7, 'C\'est le produit 5', '2023-12-19 12:22:38', '2023-12-20 15:58:48'),
+('8a3d1855-8ce5-4350-9b14-8ba6bd372fe0', 'Produit 4', '4.00', 16, 'C\'est le produit 4', '2023-12-19 12:22:09', '2023-12-20 16:10:28'),
+('0de720ed-7a1f-46a1-89f2-da756aa32da6', 'Produit 2', '2.00', 20, 'C\'est le produit 2', '2023-12-19 10:38:43', '2023-12-19 13:20:50'),
+('7dcd333f-8908-4f71-8c58-dc21c07412a0', 'Produit 3', '3.00', 30, 'C\'est le produit 3', '2023-12-19 12:21:29', '2023-12-19 13:21:29'),
 ('8efa72d9-38cd-4455-90b4-d3989d30ce12', 'Produit 1', '1.00', 10, 'C\'est le produit 1', '2023-12-06 14:31:15', '2023-12-07 11:35:44');
 
 -- --------------------------------------------------------
