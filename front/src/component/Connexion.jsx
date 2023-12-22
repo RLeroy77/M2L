@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import Cookies from 'js-cookie';
 import '../style/Connexion.css';
 
 const InputField = ({ label, type, placeholder, value, onChange }) => {
@@ -13,8 +14,9 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 };
 
 function Connexion() {
-    localStorage.clear();
-    const ls = localStorage;
+    Cookies.remove('userId');
+    // localStorage.clear();
+    // const ls = localStorage;
     const navigate = useNavigate();
     const [errorInscription, setErrorInscription] = useState('');
     const [errorConnexion, setErrorConnexion] = useState('');
@@ -122,8 +124,10 @@ function Connexion() {
                 setValideConnexion('Connexion réussie !');
                 console.log('Utilisateur authentifié avec succès', data.userId, data.isAdmin);
                 // Stocker dans localStorage
-                ls.setItem('userId', data.userId);
-                ls.setItem('isAdmin', data.isAdmin);
+                // ls.setItem('userId', data.userId);
+                //Stocker dans les Cookies
+                Cookies.set('userId', data.userId, { expires: 1, secure: true, sameSite: 'strict' });
+                console.log(Cookies.get('userId'));
                 // A changer c'est pas bien 
                 setTimeout(() => window.location.reload(), 100);
                 navigate("/")

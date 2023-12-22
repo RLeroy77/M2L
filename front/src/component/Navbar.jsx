@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import '../style/Navbar.css'
 
-function MyNavbar({ userId, setUserId, isAdmin}) {
+function MyNavbar({ userId, setUserId, isAdmin }) {
     const navigate = useNavigate();
-
-    const handleLogout = () => {
-        localStorage.clear();
-        setUserId(null)
-        navigate("/shop")
-    };
-
     const [userName, setUserName] = useState('');
 
-    const getUserInfo = async (id) => {
+    const handleLogout = () => {
+        Cookies.remove('userId');
+        localStorage.clear();
+        setUserId(null);
+        navigate("/shop");
+    };
+
+    const getUserInfo = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:8000/user_name/${id}`);
+            const response = await fetch(`http://localhost:8000/user_name/${userId}`);
             const data = await response.json();
             setUserName(data[0].user_name);
         } catch (error) {
@@ -40,12 +41,13 @@ function MyNavbar({ userId, setUserId, isAdmin}) {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/shop">Shop</Nav.Link>
                         <Nav.Link as={Link} to="">Abouts</Nav.Link>
+                        <Nav.Link as={Link} to="/panier">Panier</Nav.Link>
                     </Nav>
                     <Nav>
                         {userId ? (
                             <NavDropdown title={userName} id="collapsible-nav-dropdown">
                                 <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
-                                {isAdmin === "1" && (
+                                {isAdmin === 1 && (
                                     <>
                                         <NavDropdown.Item as={Link} to="/AdminUser">Gestion des comptes</NavDropdown.Item>
                                         <NavDropdown.Item as={Link} to="/AdminProduit">Gestion des produits</NavDropdown.Item>

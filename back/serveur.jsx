@@ -94,17 +94,28 @@ app.post('/connexion', withDBConnection, async (req, res) => {
     }
 });
 
-
+//Route pour obtenir le rôle par ID utilisé dans App.jsx
+app.get('/role/:id', withDBConnection, async (req, res) => {
+    const id = req.params.id;
+    try {
+        console.log("Lancement de la requête");
+        const [rows] = await req.dbConnection.execute('SELECT admin FROM utilisateur WHERE id = ?', [id]);
+        console.log(rows);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.log(err);
+        res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+})
 
 // Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     try {
         console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT user_name FROM utilisateur WHERE id = ?', [id]);
+        const [rows] = await req.dbConnection.execute('SELECT user_name FROM utilisateur WHERE id = ?', [id]);
         console.log(rows);
         res.status(200).json(rows);
-
     } catch (err) {
         console.log(err);
         res.status(500).send("Erreur lors de l'exécution de la requête");
@@ -117,7 +128,7 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 app.get('/produit', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT id, nom, prix, quantite, description FROM produit');
+        const [rows] = await req.dbConnection.execute('SELECT id, nom, prix, quantite, description FROM produit');
         console.log(rows);
         res.status(200).json(rows);
     } catch (error) {
@@ -227,12 +238,12 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
 });
 
 
-// Route pour obtenir un produit en fonction de son ID
+// Route pour obtenir un produit en fonction de son ID dans Produit.jsx
 app.get('/produit/:id', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
         const productId = req.params.id;
-        const [rows, fields] = await req.dbConnection.execute(
+        const [rows] = await req.dbConnection.execute(
             'SELECT id, nom, prix, quantite, description FROM produit WHERE id = ?',
             [productId]
         );
@@ -250,12 +261,40 @@ app.get('/produit/:id', withDBConnection, async (req, res) => {
     }
 });
 
+//Route pour mettre à jour la quantité des produits lors de la validation du panier dans Panier.jsx
+app.put('/panier', withDBConnection, async (req, res) => {
+    try {
+        const panier = req.body;
+        if (!Array.isArray(panier) || panier.length === 0) {
+            return res.status(400).json({ message: 'Le panier est vide ou mal formé.' });
+        }
+        for (const item of panier) {
+            const { id, quantite } = item;
+            if (!id || !quantite) {
+                return res.status(400).json({ message: 'L\'ID du produit et/ou la quantité ne sont pas fournis pour un élément du panier.' });
+            }
+            const [produit] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
+            if (!produit.length) {
+                return res.status(404).json({ message: `Produit avec l'ID ${id} non trouvé.` });
+            }
+            const nouvelleQuantite = produit[0].quantite - quantite;
+            if (nouvelleQuantite < 0) {
+                return res.status(400).json({ message: `La quantité du produit ${id} ne peut pas devenir négative.` });
+            }
+            await req.dbConnection.execute('UPDATE produit SET quantite = ? WHERE id = ?', [nouvelleQuantite, id]);
+        }
+        res.json({ message: 'Quantités des produits mises à jour avec succès.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour des quantités des produits.' });
+    }
+});
 
 // Route pour obtenir toutes les utilisateurs dans AdminUser.jsx
 app.get('/utilisateur', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
-        const [rows, fields] = await req.dbConnection.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
+        const [rows] = await req.dbConnection.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
         console.log(rows);
         res.status(200).json(rows);
     } catch (err) {
