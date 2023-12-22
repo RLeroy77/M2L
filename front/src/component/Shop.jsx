@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootst
 import { Link, useNavigate } from 'react-router-dom';
 
 
-function Shop(userId, setUserId, isAdmin, setIsAdmin) {
+function Shop() {
     const [Product, setProduct] = useState([]);
 
     //Récuperer tous les produits 

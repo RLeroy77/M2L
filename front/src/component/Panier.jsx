@@ -4,34 +4,41 @@ import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootst
 function Panier(userId, isAdmin) {
     const ls = localStorage;
     const [Panier, setPanier] = useState([]);
+    const [errorConnect, setErrorConnect] = useState('');
 
     // Fonction pour mettre à jour la quantité dans le panier
-    const handleValidation = async () => {
+    const handleValidation = async ({ userId }) => {
         try {
-            const panier = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
-
-            // Vérifier si le panier n'est pas vide
-            if (panier.length > 0) {
-                // Récupérer les informations nécessaires pour chaque produit dans le panier
-                const produitsAUpdater = panier.map(item => ({
-                    id: item.id,
-                    quantite: item.quantite,
-                }));
-                console.log(produitsAUpdater)
-                // Envoyer la requête PUT au backend avec les mises à jour
-                const response = await fetch('http://localhost:8000/panier', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(produitsAUpdater),
-                });
-                const data = await response.json();
-                console.log(data.message); // Affichez le message ou gérez la réponse de la manière qui vous convient
-                ls.removeItem('panier');
-                setPanier([]);
+            // Vérifier si userId existe
+            if (userId) {
+                const panier = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
+                // Vérifier si le panier n'est pas vide
+                if (panier.length > 0) {
+                    // Récupérer les informations nécessaires pour chaque produit dans le panier
+                    const produitsAUpdater = panier.map(item => ({
+                        id: item.id,
+                        quantite: item.quantite,
+                    }));
+                    console.log(produitsAUpdater)
+                    // Envoyer la requête PUT au backend avec les mises à jour
+                    const response = await fetch('http://localhost:8000/panier', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(produitsAUpdater),
+                    });
+                    const data = await response.json();
+                    console.log(data.message); // Affichez le message ou gérez la réponse de la manière qui vous convient
+                    ls.removeItem('panier');
+                    setPanier([]);
+                } else {
+                    console.log("Le panier est vide.");
+                    setErrorConnect("Erreur lors de l'ajout d'un produit : ");
+                    setTimeout(() => setErrorConnect(''), 2500);
+                }
             } else {
-                console.log("Le panier est vide.");
+                console.log("userId est null.");
             }
         } catch (error) {
             console.error(error);
@@ -46,6 +53,7 @@ function Panier(userId, isAdmin) {
     return (
         <Container>
             <h1>Panier</h1>
+            {errorConnect && <p className='error'>{errorConnect}</p>}
             {Panier.length > 0 ? (
                 <div>
                     <Card className='mb-2'>
@@ -57,7 +65,7 @@ function Panier(userId, isAdmin) {
                             ))}
                         </ListGroup>
                     </Card>
-                    <Button variant='primary' onClick={handleValidation}>
+                    <Button variant='primary' onClick={() => handleValidation(userId)}>
                         Valider le panier
                     </Button>
                 </div>

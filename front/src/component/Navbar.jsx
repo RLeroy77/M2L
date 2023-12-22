@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import '../style/Navbar.css'
 
-function MyNavbar({ userId, setUserId, isAdmin }) {
+function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
     const navigate = useNavigate();
     const [userName, setUserName] = useState('');
 
@@ -12,6 +12,7 @@ function MyNavbar({ userId, setUserId, isAdmin }) {
         Cookies.remove('userId');
         localStorage.clear();
         setUserId(null);
+        setIsAdmin(null);
         navigate("/shop");
     };
 

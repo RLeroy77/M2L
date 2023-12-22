@@ -15,8 +15,8 @@ import '../style/App.css';
 
 function App() {
   // const [userId, setUserId] = useState(localStorage.getItem('userId'));
-  const [userId, setUserId] = useState(Cookies.get('userId'));
-  const [isAdmin, setIsAdmin] = useState('');
+  const [userId, setUserId] = useState(Cookies.get('userId') || null);
+  const [isAdmin, setIsAdmin] = useState(null);
 
   const getUserRole = async (userId) => {
     try {
@@ -29,18 +29,18 @@ function App() {
   }
 
   useEffect(() => {
-    if (useId) {
+    if (userId) {
       getUserRole(userId);
     }
   }, [userId]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Navbar userId={userId} setUserId={setUserId} isAdmin={isAdmin} />
+      <Navbar userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
       <div style={{ flexGrow: 1 }} className='bg-color'>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/shop' element={<Shop userId={userId} isAdmin={isAdmin} />} />
+          <Route path='/shop' element={<Shop />} />
           <Route path="/Produit/:productId" element={<Produit userId={userId} isAdmin={isAdmin} />} />
           <Route path='/Panier' element={<Panier userId={userId} isAdmin={isAdmin} />} />
           <Route path='/connexion' element={<Connexion />} />

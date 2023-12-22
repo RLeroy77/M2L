@@ -127,7 +127,6 @@ function Connexion() {
                 // ls.setItem('userId', data.userId);
                 //Stocker dans les Cookies
                 Cookies.set('userId', data.userId, { expires: 1, secure: true, sameSite: 'strict' });
-                console.log(Cookies.get('userId'));
                 // A changer c'est pas bien 
                 setTimeout(() => window.location.reload(), 100);
                 navigate("/")
