@@ -1,0 +1,45 @@
+/* Style pour les boutons */
+.btn-good,
+.btn-good:active {
+    color: #15161d !important;
+    background-color: #f6c614 !important;
+    border-color: #f6c614 !important;
+}
+
+.btn-good:hover {
+    color: #fff !important;
+    background-color: #f6c614 !important;
+    border-color: #f6c614 !important;
+}
+
+.btn-good:focus,
+.btn-good.focus {
+    box-shadow: 0 0 0 0.2rem rgba(246, 198, 20, 0.5) !important;
+}
+
+.btn-delete,
+.btn-delete:active {
+    color: #15161d !important;
+    background-color: #c92b39 !important;
+    border-color: #c92b39 !important;
+}
+
+.btn-delete:hover {
+    color: #fff !important;
+    background-color: #c92b39 !important;
+    border-color: #c92b39 !important;
+}
+
+.btn-delete:focus,
+.btn-delete.focus {
+    box-shadow: 0 0 0 0.2rem rgba(201, 43, 57, 0.5) !important;
+}
+
+/*Style pour les messages d'alerte*/
+.error {
+    color: #c92b39 !important;
+}
+
+.success {
+    color: green !important;
+}

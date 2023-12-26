@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, ListGroup, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, ListGroup, Button, Table } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
+import '../style/Produit.css';
 
-export default function Produit(userId, isAdmin) {
+export default function Produit({ userId, isAdmin }) {
     const ls = localStorage;
     const { productId } = useParams(); // Utilisation de useParams directement
     const [product, setProduct] = useState(null);
@@ -24,8 +25,7 @@ export default function Produit(userId, isAdmin) {
         // Mettre à jour la quantité lorsqu'elle change
         setQuantite(parseInt(e.target.value, 10));
     };
-
-    {/* Fonction pour ajouter au panier */ }
+    /* Fonction pour ajouter au panier */
     const addToCart = () => {
         // Vérifier si le panier existe déjà dans le localStorage
         const cart = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
@@ -34,13 +34,16 @@ export default function Produit(userId, isAdmin) {
         if (existingProductIndex !== -1) {
             // Le produit est déjà dans le panier, mettre à jour la quantité
             cart[existingProductIndex].quantite = quantite;
+            // Mettre à jour le prix total en fonction de la nouvelle quantité
+            cart[existingProductIndex].prixTotal = (quantite * product?.prix).toFixed(2);
         } else {
             // Le produit n'est pas encore dans le panier, l'ajouter
             const produitAjoute = {
                 id: productId,
                 quantite: quantite,
                 nom: product?.nom,
-                prix: product?.prix,
+                prixUni: product?.prix,
+                prixTotal: (quantite * product?.prix).toFixed(2),
             };
             cart.push(produitAjoute);
         }
@@ -48,6 +51,7 @@ export default function Produit(userId, isAdmin) {
         ls.setItem('panier', JSON.stringify(cart));
         setPanier(cart);
     };
+
 
 
     useEffect(() => {
@@ -72,48 +76,72 @@ export default function Produit(userId, isAdmin) {
                             <Card.Text>
                                 <ListGroup variant="flush">
                                     <ListGroup.Item>Prix unitaire : {product?.prix} €</ListGroup.Item>
-                                    <ListGroup.Item>Quantité disponible : {product?.quantite}</ListGroup.Item>
+                                    {product?.quantite > 0 && (
+                                        <ListGroup.Item>Quantité disponible : {product?.quantite}</ListGroup.Item>
+                                    )}
+                                    {product?.quantite === 0 && (
+                                        <ListGroup.Item style={{ color: 'red' }}>Rupture de stock</ListGroup.Item>
+                                    )}
                                     <ListGroup.Item>Description : {product?.description}</ListGroup.Item>
                                 </ListGroup>
                             </Card.Text>
-                            <Form.Group controlId="quantite">
-                                <Form.Label>Quantité :</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={quantite}
-                                    onChange={handleQuantiteChange}
-                                    className='mb-2'
-                                >
-                                    {[...Array(product?.quantite).keys()].map((num) => (
-                                        <option key={num + 1} value={num + 1}>
-                                            {num + 1}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                                <Button onClick={() => addToCart()} variant="primary">
-                                    Ajouter au panier
-                                </Button>
-                            </Form.Group>
+                            {product?.quantite > 0 && (
+                                <div>
+                                    <Form.Group controlId="quantite">
+                                        <Form.Label>Quantité :</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            value={quantite}
+                                            onChange={handleQuantiteChange}
+                                            className='mb-2'
+                                        >
+                                            {[...Array(product?.quantite).keys()].map((num) => (
+                                                <option key={num + 1} value={num + 1}>
+                                                    {num + 1}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                        <Button
+                                            onClick={() => addToCart()}
+                                            className='btn-good'>
+                                            Ajouter au panier
+                                        </Button>
+                                    </Form.Group>
+                                </div>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col xs={12} md={6}>
                     <h1>Panier</h1>
                     {Panier.length > 0 ? (
-                        <div>
-                            <Card className='mb-2'>
-                                <ListGroup>
+                        <React.Fragment>
+                            <Table className='mt-2' responsive striped bordered hover variant="light">
+                                <thead>
+                                    <tr className="text-center">
+                                        <th>Produit</th>
+                                        <th>Quantité(s)</th>
+                                        <th>Prix unitaire (en €)</th>
+                                        <th>Prix total (en €)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {Panier.map((item, index) => (
-                                        <ListGroup.Item key={index}>
-                                            Produit: {item.nom}, Quantité: {item.quantite}, Prix : {item.prix} €
-                                        </ListGroup.Item>
+                                        <tr className="align-middle" key={index}>
+                                            <td>{item.nom}</td>
+                                            <td>{item.quantite}</td>
+                                            <td>{item.prixUni}</td>
+                                            <td>{item.prixTotal}</td>
+                                        </tr>
                                     ))}
-                                </ListGroup>
-                            </Card>
-                            <Button as={Link} to={'/panier'}>
+                                </tbody>
+                            </Table>
+                            <Button
+                                as={Link} to={'/panier'}
+                                className='btn-good'>
                                 Voir le panier
                             </Button>
-                        </div>
+                        </React.Fragment>
                     ) : (
                         <p>Votre panier est vide.</p>
                     )}

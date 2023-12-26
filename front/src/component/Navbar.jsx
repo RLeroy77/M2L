@@ -13,7 +13,7 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
         localStorage.clear();
         setUserId(null);
         setIsAdmin(null);
-        navigate("/shop");
+        navigate("/");
     };
 
     const getUserInfo = async (userId) => {
