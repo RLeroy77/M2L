@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
 
-function Profil({ userId, isAdmin}) {
+function Profil({ userId }) {
 
     useEffect(() => {
     }, [userId]);
@@ -11,7 +11,7 @@ function Profil({ userId, isAdmin}) {
         <Container fluid="">
             <Row>
                 <Col>
-                    {/* <Col>Votre Profil : {userName}</Col> */}
+                    Votre id est : {userId}
                 </Col>
             </Row>
         </Container>

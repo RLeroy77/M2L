@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Form, ListGroup, Button, Table } from 'react
 import { useParams, Link } from 'react-router-dom';
 import '../style/Produit.css';
 
-export default function Produit({ userId, isAdmin }) {
+export default function Produit() {
     const ls = useMemo(() => localStorage, []);
     const { productId } = useParams(); // Utilisation de useParams directement
     const [product, setProduct] = useState(null);

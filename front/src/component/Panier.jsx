@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import '../style/Panier.css';
 
-function Panier({ userId, isAdmin }) {
+function Panier({ userId }) {
     const ls = useMemo(() => localStorage, []);
     const [Panier, setPanier] = useState([]);
     const [errorValidation, setErrorValidation] = useState('');
