@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Row, Col, Card, Form, ListGroup, Button, Table } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
 import '../style/Produit.css';
 
 export default function Produit({ userId, isAdmin }) {
-    const ls = localStorage;
+    const ls = useMemo(() => localStorage, []);
     const { productId } = useParams(); // Utilisation de useParams directement
     const [product, setProduct] = useState(null);
     const [quantite, setQuantite] = useState(1);
@@ -57,8 +57,8 @@ export default function Produit({ userId, isAdmin }) {
     useEffect(() => {
         const cart = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
         setPanier(cart);
-        RecupProductById(productId); // Utilisation de la valeur directe de useParams
-    }, [productId]); // Assurez-vous de déclarer id comme une dépendance pour useEffect
+        RecupProductById(productId);
+    }, [productId, ls]);
 
     return (
         <Container fluid="">

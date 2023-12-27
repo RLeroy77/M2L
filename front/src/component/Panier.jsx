@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Button, Alert, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +6,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import '../style/Panier.css';
 
 function Panier({ userId, isAdmin }) {
-    const ls = localStorage;
+    const ls = useMemo(() => localStorage, []);
     const [Panier, setPanier] = useState([]);
     const [errorValidation, setErrorValidation] = useState('');
     const [valideValidation, setValideValidation] = useState('');
@@ -71,24 +71,25 @@ function Panier({ userId, isAdmin }) {
         }
     };
 
-// Fonction pour calculer le total de la quantité et le total du prix
-const calculateTotals = () => {
-    const totalQuantite = Panier.reduce((total, item) => total + item.quantite, 0);
-    // Utilise parseFloat pour convertir les prixTotal en nombres
-    const totalPrice = Panier.reduce((total, item) => total + parseFloat(item.prixTotal), 0);
-    // Utilise toFixed(2) pour formater le résultat avec deux chiffres après la virgule
-    const formattedTotalPrice = totalPrice.toFixed(2);
-    return { totalQuantite, totalPrice: formattedTotalPrice };
-};
+    // Fonction pour calculer le total de la quantité et le total du prix
+    const calculateTotals = () => {
+        const totalQuantite = Panier.reduce((total, item) => total + item.quantite, 0);
+        // Utilise parseFloat pour convertir les prixTotal en nombres
+        const totalPrice = Panier.reduce((total, item) => total + parseFloat(item.prixTotal), 0);
+        // Utilise toFixed(2) pour formater le résultat avec deux chiffres après la virgule
+        const formattedTotalPrice = totalPrice.toFixed(2);
+        return { totalQuantite, totalPrice: formattedTotalPrice };
+    };
 
-const { totalQuantite, totalPrice } = calculateTotals();
+    const { totalQuantite, totalPrice } = calculateTotals();
 
 
 
     useEffect(() => {
         const cart = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
         setPanier(cart);
-    }, []);
+    }, [ls]);
+
 
     return (
         <Container>
