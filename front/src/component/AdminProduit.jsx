@@ -157,6 +157,7 @@ function AdminProduit() {
                 if (editProductResponse.ok) {
                     setValideEdit('Produit modifié avec succès');
                     RecupProduct();
+                    // setSelectedProductId(null);
                     setEditDataProduct({
                         nom: "",
                         prix: "",

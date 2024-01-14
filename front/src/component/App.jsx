@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Navbar from './Navbar';
@@ -43,10 +43,10 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/shop' element={<Shop />} />
-          <Route path="/Produit/:productId" element={<Produit userId={userId} isAdmin={isAdmin} />} />
-          <Route path='/Panier' element={<Panier userId={userId} isAdmin={isAdmin} />} />
+          <Route path="/Produit/:productId" element={<Produit />} />
+          <Route path='/Panier' element={<Panier userId={userId} />} />
           <Route path='/connexion' element={<Connexion />} />
-          <Route path='/profil' element={<Profil userId={userId} isAdmin={isAdmin} />} />
+          <Route path='/profil' element={<Profil userId={userId} />} />
           <Route path='/AdminProduit' element={<AdminProduit />} />
           <Route path='/AdminUser' element={<AdminUser />} />
         </Routes>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Button, Card, ListGroup } from 'react-bootstrap';
+import { Link} from 'react-router-dom';
 import '../style/Shop.css';
 
 
@@ -42,7 +42,9 @@ function Shop() {
                                             <ListGroup variant="flush">
                                                 <ListGroup.Item>Prix : {product.prix} €</ListGroup.Item>
                                             </ListGroup>
-                                            <Button className='btn-good' as={Link} to={`/Produit/${product.id}`}>
+                                            <Button
+                                                as={Link} to={`/Produit/${product.id}`}
+                                                className='btn-good'>
                                                 Voir détail
                                             </Button>
                                         </Card.Body>

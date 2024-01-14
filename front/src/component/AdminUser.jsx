@@ -108,7 +108,6 @@ export default function AdminUser() {
     const pageArray = pageCount > 0 ? [...Array(pageCount)] : [];
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-
     const adjustUsersPerPage = () => {
         const screenHeight = window.innerHeight;
         // Ajuster le nombre d'éléments par page en fonction de la hauteur de l'écran
@@ -126,10 +125,8 @@ export default function AdminUser() {
         RecupUser();
         // Appeler la fonction d'ajustement au chargement initial de la page
         adjustUsersPerPage();
-
         // Ajouter un écouteur d'événements pour détecter les changements de taille d'écran
         window.addEventListener('resize', adjustUsersPerPage);
-
         // Nettoyer l'écouteur d'événements lors du démontage du composant
         return () => {
             window.removeEventListener('resize', adjustUsersPerPage);
@@ -183,7 +180,7 @@ export default function AdminUser() {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="text-center align-middle">
+                                            <td className="text-center">
                                                 <Button size='sm'
                                                     className='btn-delete m-2'
                                                     onClick={() => handleDeleteUser(user.id)}
