@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import '../style/Shop.css';
 
 
 function Shop() {
@@ -41,7 +42,7 @@ function Shop() {
                                             <ListGroup variant="flush">
                                                 <ListGroup.Item>Prix : {product.prix} €</ListGroup.Item>
                                             </ListGroup>
-                                            <Button as={Link} to={`/Produit/${product.id}`}>
+                                            <Button className='btn-good' as={Link} to={`/Produit/${product.id}`}>
                                                 Voir détail
                                             </Button>
                                         </Card.Body>

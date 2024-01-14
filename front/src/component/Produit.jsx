@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, ListGroup, Button } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
+import '../style/Produit.css';
 
 export default function Produit(userId, isAdmin) {
     const ls = localStorage;
@@ -90,7 +91,7 @@ export default function Produit(userId, isAdmin) {
                                         </option>
                                     ))}
                                 </Form.Control>
-                                <Button onClick={() => addToCart()} variant="primary">
+                                <Button className='btn-good' onClick={() => addToCart()} variant="primary">
                                     Ajouter au panier
                                 </Button>
                             </Form.Group>
@@ -110,7 +111,7 @@ export default function Produit(userId, isAdmin) {
                                     ))}
                                 </ListGroup>
                             </Card>
-                            <Button as={Link} to={'/panier'}>
+                            <Button className='btn-good' as={Link} to={'/panier'}>
                                 Voir le panier
                             </Button>
                         </div>
