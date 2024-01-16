@@ -17,6 +17,23 @@
 /back/.env.test.local
 /back/.env.production.local
 
+# Pour le back
+# dependencies
+/back_middleware/node_modules
+/back_middleware/.pnp
+/back_middleware/.pnp.js
+# testing
+/back_middleware/coverage
+# production
+/back_middleware/build
+# misc
+/back_middleware/.DS_Store
+/back_middleware/.env
+/back_middleware/.env.local
+/back_middleware/.env.development.local
+/back_middleware/.env.test.local
+/back_middleware/.env.production.local
+
 
 # Pour le front
 # dependencies
