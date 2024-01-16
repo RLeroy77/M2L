@@ -18,6 +18,8 @@ function App() {
   // const [userId, setUserId] = useState(localStorage.getItem('userId'));
   const [userId, setUserId] = useState(Cookies.get('userId') || null);
   const [isAdmin, setIsAdmin] = useState(null);
+  console.log(userId)
+  console.log(isAdmin)
 
   const getUserRole = async (userId) => {
     try {
