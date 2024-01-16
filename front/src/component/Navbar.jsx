@@ -36,18 +36,18 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
     return (
         <Navbar collapseOnSelect expand="sm" className="bg-jaune">
             <Container>
-                <Navbar.Brand as={Link} to="/">M2L Produts</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">BoxeSportLorraine</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link as={Link} to="/shop">Shop</Nav.Link>
-                        <Nav.Link as={Link} to="">Abouts</Nav.Link>
-                        <Nav.Link as={Link} to="/panier">Panier</Nav.Link>
+                        <Nav.Link as={Link} to="/Boutique">Boutique</Nav.Link>
+                        <Nav.Link as={Link} to="/Panier">Panier</Nav.Link>
+                        <Nav.Link as={Link} to='/APropos'>A propos</Nav.Link>
                     </Nav>
                     <Nav>
                         {userId ? (
                             <NavDropdown title={userName} id="collapsible-nav-dropdown">
-                                <NavDropdown.Item as={Link} to="/profil">Profil</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/Profil">Profil</NavDropdown.Item>
                                 {isAdmin === 1 && (
                                     <>
                                         <NavDropdown.Item as={Link} to="/AdminUser">Gestion des comptes</NavDropdown.Item>
@@ -58,7 +58,7 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
                                 <NavDropdown.Item onClick={handleLogout}>Déconnexion</NavDropdown.Item>
                             </NavDropdown>
                         ) : (
-                            <Nav.Link as={Link} to="/connexion">Connexion/Inscription</Nav.Link>
+                            <Nav.Link as={Link} to="/InscriptionConnexion">Connexion/Inscription</Nav.Link>
                         )}
                     </Nav>
                 </Navbar.Collapse>

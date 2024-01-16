@@ -85,7 +85,7 @@ function AdminProduit() {
                 formData.append('description', newDataProduct.description);
                 formData.append('image', newDataProduct.image);
 
-                const reponse = await fetch('http://localhost:8000/produit', {
+                const reponse = await fetch('http://localhost:8000/adminProduit', {
                     method: 'POST',
                     body: formData,
                 });
@@ -146,7 +146,7 @@ function AdminProduit() {
                 if (editDataProduct.quantite) requestBody.quantite = editDataProduct.quantite;
                 if (editDataProduct.description) requestBody.description = editDataProduct.description;
 
-                const editProductResponse = await fetch(`http://localhost:8000/produit/${selectedProductId}`, {
+                const editProductResponse = await fetch(`http://localhost:8000/adminProduit/${selectedProductId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -208,7 +208,7 @@ function AdminProduit() {
     //Début partie Suppression
     const handleDeleteProduct = async (productId) => {
         try {
-            const deleteProductResponse = await fetch(`http://localhost:8000/produit/${productId}`, {
+            const deleteProductResponse = await fetch(`http://localhost:8000/adminProduit/${productId}`, {
                 method: 'DELETE',
             });
 

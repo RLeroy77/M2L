@@ -54,8 +54,9 @@ app.get("/", (req, res) => {
 });
 
 
-// Route pour ajouter un utilisateur utilisé dans Connexion.jsx
-app.post('/utilisateur', withDBConnection, async (req, res) => {
+
+// Route pour inscrire un utilisateur utilisé dans InscriptionConnexion.jsx
+app.post('/inscription', withDBConnection, async (req, res) => {
     try {
         const { nom, prenom, user_name, mot_de_passe } = req.body;
         const id = crypto.randomUUID();
@@ -73,7 +74,7 @@ app.post('/utilisateur', withDBConnection, async (req, res) => {
     }
 });
 
-// Route pour la connexion utilisé dans Connexion.jsx
+// Route pour la connexion utilisé dans InscriptionConnexion.jsx
 app.post('/connexion', withDBConnection, async (req, res) => {
     const { user_name, mot_de_passe } = req.body;
     try {
@@ -94,6 +95,8 @@ app.post('/connexion', withDBConnection, async (req, res) => {
     }
 });
 
+
+
 //Route pour obtenir le rôle par ID utilisé dans App.jsx
 app.get('/role/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -107,6 +110,8 @@ app.get('/role/:id', withDBConnection, async (req, res) => {
         res.status(500).send("Erreur lors de l'exécution de la requête");
     }
 })
+
+
 
 // Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
@@ -124,7 +129,61 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 
 
 
-//Route pour obtenir tous les produits dans AdminProduit.jsx et Shop.jsx
+// Route pour obtenir un produit en fonction de son ID dans Produit.jsx
+app.get('/produit/:id', withDBConnection, async (req, res) => {
+    try {
+        console.log("Lancement de la requête");
+        const productId = req.params.id;
+        const [rows] = await req.dbConnection.execute(
+            'SELECT id, nom, prix, quantite, description FROM produit WHERE id = ?',
+            [productId]
+        );
+
+        if (rows.length === 0) {
+            // Si aucun produit n'est trouvé avec cet ID
+            res.status(404).json({ message: 'Produit non trouvé' });
+        } else {
+            const product = rows[0];
+            res.status(200).json(product);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Erreur lors de l'exécution de la requête");
+    }
+});
+
+//Route pour mettre à jour la quantité des produits lors de la validation du panier dans Panier.jsx
+app.put('/panier', withDBConnection, async (req, res) => {
+    try {
+        const panier = req.body;
+        if (!Array.isArray(panier) || panier.length === 0) {
+            return res.status(400).json({ message: 'Le panier est vide ou mal formé.' });
+        }
+        for (const item of panier) {
+            const { id, quantite } = item;
+            if (!id || !quantite) {
+                return res.status(400).json({ message: 'L\'ID du produit et/ou la quantité ne sont pas fournis pour un élément du panier.' });
+            }
+            const [produit] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
+            if (!produit.length) {
+                return res.status(404).json({ message: `Produit avec l'ID ${id} non trouvé.` });
+            }
+            const nouvelleQuantite = produit[0].quantite - quantite;
+            if (nouvelleQuantite < 0) {
+                return res.status(400).json({ message: `La quantité du produit ${id} ne peut pas devenir négative.` });
+            }
+            await req.dbConnection.execute('UPDATE produit SET quantite = ? WHERE id = ?', [nouvelleQuantite, id]);
+        }
+        res.json({ message: 'Quantités des produits mises à jour avec succès.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour des quantités des produits.' });
+    }
+});
+
+
+
+//Route pour obtenir tous les produits dans AdminProduit.jsx et Boutique.jsx
 app.get('/produit', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
@@ -138,7 +197,7 @@ app.get('/produit', withDBConnection, async (req, res) => {
 });
 
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
-app.post('/produit', withDBConnection, upload.single('image'), async (req, res) => {
+app.post('/adminProduit', withDBConnection, upload.single('image'), async (req, res) => {
     try {
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
@@ -161,7 +220,7 @@ app.post('/produit', withDBConnection, upload.single('image'), async (req, res) 
 });
 
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
-app.put('/produit/:id', withDBConnection, async (req, res) => {
+app.put('/adminProduit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si le produit existe avant de le mettre à jour
@@ -217,7 +276,7 @@ app.put('/produit/:id', withDBConnection, async (req, res) => {
 });
 
 //Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
-app.delete('/produit/:id', withDBConnection, async (req, res) => {
+app.delete('/adminProduit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     const imagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
     try {
@@ -238,60 +297,14 @@ app.delete('/produit/:id', withDBConnection, async (req, res) => {
 });
 
 
-// Route pour obtenir un produit en fonction de son ID dans Produit.jsx
-app.get('/produit/:id', withDBConnection, async (req, res) => {
-    try {
-        console.log("Lancement de la requête");
-        const productId = req.params.id;
-        const [rows] = await req.dbConnection.execute(
-            'SELECT id, nom, prix, quantite, description FROM produit WHERE id = ?',
-            [productId]
-        );
 
-        if (rows.length === 0) {
-            // Si aucun produit n'est trouvé avec cet ID
-            res.status(404).json({ message: 'Produit non trouvé' });
-        } else {
-            const product = rows[0];
-            res.status(200).json(product);
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
-    }
-});
 
-//Route pour mettre à jour la quantité des produits lors de la validation du panier dans Panier.jsx
-app.put('/panier', withDBConnection, async (req, res) => {
-    try {
-        const panier = req.body;
-        if (!Array.isArray(panier) || panier.length === 0) {
-            return res.status(400).json({ message: 'Le panier est vide ou mal formé.' });
-        }
-        for (const item of panier) {
-            const { id, quantite } = item;
-            if (!id || !quantite) {
-                return res.status(400).json({ message: 'L\'ID du produit et/ou la quantité ne sont pas fournis pour un élément du panier.' });
-            }
-            const [produit] = await req.dbConnection.execute('SELECT * FROM produit WHERE id = ?', [id]);
-            if (!produit.length) {
-                return res.status(404).json({ message: `Produit avec l'ID ${id} non trouvé.` });
-            }
-            const nouvelleQuantite = produit[0].quantite - quantite;
-            if (nouvelleQuantite < 0) {
-                return res.status(400).json({ message: `La quantité du produit ${id} ne peut pas devenir négative.` });
-            }
-            await req.dbConnection.execute('UPDATE produit SET quantite = ? WHERE id = ?', [nouvelleQuantite, id]);
-        }
-        res.json({ message: 'Quantités des produits mises à jour avec succès.' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erreur lors de la mise à jour des quantités des produits.' });
-    }
-});
+
+
+
 
 // Route pour obtenir toutes les utilisateurs dans AdminUser.jsx
-app.get('/utilisateur', withDBConnection, async (req, res) => {
+app.get('/adminUser', withDBConnection, async (req, res) => {
     try {
         console.log("Lancement de la requête");
         const [rows] = await req.dbConnection.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
@@ -304,7 +317,7 @@ app.get('/utilisateur', withDBConnection, async (req, res) => {
 });
 
 // Route pour mettre à jour le rôle d'un utilisateur fonction de son ID dans AdminUser.jsx
-app.put('/utilisateur/role/:id', withDBConnection, async (req, res) => {
+app.put('/adminUser/role/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si l'utilisateur existe avant de le mettre à jour
@@ -325,7 +338,7 @@ app.put('/utilisateur/role/:id', withDBConnection, async (req, res) => {
 });
 
 // Route pour supprimer un utilisateur en fonction de son ID dans AdminUser.jsx
-app.delete('/utilisateur/:id', withDBConnection, async (req, res) => {
+app.delete('/adminUser/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si l'utilisateur existe avant de le supprimer
@@ -385,26 +398,20 @@ app.put('/utilisateur/:id', withDBConnection, async (req, res) => {
     try {
         // Vérifier si l'utilisateur existe avant de le mettre à jour
         const [existingUser] = await req.dbConnection.execute('SELECT * FROM utilisateur WHERE id = ?', [id]);
-
         if (existingUser.length === 0) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
-
         // Utilisateur trouvé, procéder à la mise à jour
         const { nom, prenom, user_name, mot_de_passe, admin } = req.body;
         const date_mise_a_jour = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
         // Si un nouveau mot de passe est fourni, le hasher
         const hashedPassword = mot_de_passe ? await bcrypt.hash(mot_de_passe, 10) : existingUser[0].mot_de_passe;
-
         // Effectuer la mise à jour dans la base de données
         await req.dbConnection.execute(
             'UPDATE utilisateur SET nom = ?, prenom = ?, user_name = ?, mot_de_passe = ?, admin = ?, date_mise_a_jour = ? WHERE id = ?',
             [nom, prenom, user_name, hashedPassword, admin, date_mise_a_jour, id]
         );
-
         res.status(200).json({ message: "Utilisateur mis à jour avec succès" });
-
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Erreur lors de la mise à jour de l'utilisateur" });

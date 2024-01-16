@@ -18,7 +18,7 @@ function MyFooter() {
                         <ul className="list-unstyled">
                             <li>
                                 <FontAwesomeIcon icon={faEnvelope} />
-                                <span className="label">contact@m2lproduct.com</span>
+                                <span className="label">contact@m2l-bsl.com</span>
                             </li>
                         </ul>
                     </Col>

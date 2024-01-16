@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Button, Alert, Table } from 'react-bootstrap';
+import { Container, Row, Col, Button, Alert, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -92,74 +92,78 @@ function Panier({ userId }) {
 
 
     return (
-        <Container>
-            <h1>Panier</h1>
-            {valideValidation && <h3 className='success'>{valideValidation}</h3>}
-            {errorValidation && <Alert variant="danger">
-                <p>{errorValidation}</p>
-                <Button
-                    as={Link} to={'/connexion'}
-                    className='btn-delete'>
-                    Connexion/Inscription
-                </Button>
-            </Alert>}
-            {Panier.length > 0 ? (
-                <React.Fragment>
-                    <Table className='mt-2' responsive striped bordered hover variant="light">
-                        <thead>
-                            <tr className="text-center">
-                                <th>Produit</th>
-                                <th>Prix unitaire (en €)</th>
-                                <th>Quantité(s)</th>
-                                <th>Prix (en €)</th>
-                                <th>Interaction</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Panier.map((item, index) => (
-                                <tr className="align-middle" key={index}>
-                                    <td>{item.nom}</td>
-                                    <td className="text-center">{item.prixUni}</td>
-                                    <td className="text-center">{item.quantite}</td>
-                                    <td className="text-center">{item.prixTotal}</td>
-                                    <td className="text-center">
-                                        <Button size='sm'
-                                            className='btn-delete m-2'
-                                            onClick={() => removeFromCart(item.id)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colSpan={5}></td>
-                            </tr>
-                            <tr className="text-center">
-                                <td colSpan="3"></td>
-                                <th>Quantité(s) total</th>
-                                <td>{totalQuantite}</td>
-                            </tr>
-                            <tr className="text-center">
-                                <td colSpan="3"></td>
-                                <th>Prix Total (en €)</th>
-                                <td>{totalPrice}</td>
-                            </tr>
-                        </tfoot>
-                    </Table>
-                    <div className="d-flex justify-content-end">
+        <Container className='my-3'>
+            <Row>
+                <Col xs={12}>
+                    <h1>Panier</h1>
+                    {valideValidation && <h3 className='success'>{valideValidation}</h3>}
+                    {errorValidation && <Alert variant="danger">
+                        <p>{errorValidation}</p>
                         <Button
-                            onClick={() => handleValidation()}
-                            className='btn-good'>
-                            Valider le panier
+                            as={Link} to={'/InscriptionConnexion'}
+                            className='btn-delete'>
+                            Connexion/Inscription
                         </Button>
-                    </div>
-                </React.Fragment>
-            ) : (
-                <p>Votre panier est vide.</p>
-            )}
+                    </Alert>}
+                    {Panier.length > 0 ? (
+                        <React.Fragment>
+                            <Table className='mt-2' responsive striped bordered hover variant="light">
+                                <thead>
+                                    <tr className="text-center">
+                                        <th>Produit</th>
+                                        <th>Prix unitaire (en €)</th>
+                                        <th>Quantité(s)</th>
+                                        <th>Prix (en €)</th>
+                                        <th>Interaction</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Panier.map((item, index) => (
+                                        <tr className="align-middle" key={index}>
+                                            <td>{item.nom}</td>
+                                            <td className="text-center">{item.prixUni}</td>
+                                            <td className="text-center">{item.quantite}</td>
+                                            <td className="text-center">{item.prixTotal}</td>
+                                            <td className="text-center">
+                                                <Button size='sm'
+                                                    className='btn-delete m-2'
+                                                    onClick={() => removeFromCart(item.id)}
+                                                >
+                                                    <FontAwesomeIcon icon={faTrash} />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan={5}></td>
+                                    </tr>
+                                    <tr className="text-center">
+                                        <td colSpan="3"></td>
+                                        <th>Quantité(s) total</th>
+                                        <td>{totalQuantite}</td>
+                                    </tr>
+                                    <tr className="text-center">
+                                        <td colSpan="3"></td>
+                                        <th>Prix Total (en €)</th>
+                                        <td>{totalPrice}</td>
+                                    </tr>
+                                </tfoot>
+                            </Table>
+                            <div className="d-flex justify-content-end">
+                                <Button
+                                    onClick={() => handleValidation()}
+                                    className='btn-good'>
+                                    Valider le panier
+                                </Button>
+                            </div>
+                        </React.Fragment>
+                    ) : (
+                        <p>Votre panier est vide.</p>
+                    )}
+                </Col>
+            </Row>
         </Container>
     )
 }

@@ -24,7 +24,7 @@ export default function AdminUser() {
     // Récuperer tous les utilisateurs
     const RecupUser = async () => {
         try {
-            const reponse = await fetch('http://localhost:8000/utilisateur');
+            const reponse = await fetch('http://localhost:8000/adminUser');
             const data = await reponse.json();
             setUser(data.map(user => ({
                 ...user,
@@ -47,7 +47,7 @@ export default function AdminUser() {
             // Récupérer la nouvelle valeur du rôle (admin) pour l'utilisateur actuel
             const newUser = User.find(user => user.id === userId);
             // Envoyer la nouvelle valeur au backend
-            const response = await fetch(`http://localhost:8000/utilisateur/role/${userId}`, {
+            const response = await fetch(`http://localhost:8000/adminUser/role/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export default function AdminUser() {
     //Début partie Suppression
     const handleDeleteUser = async (userId) => {
         try {
-            const deleteUserResponse = await fetch(`http://localhost:8000/utilisateur/${userId}`, {
+            const deleteUserResponse = await fetch(`http://localhost:8000/adminUser/${userId}`, {
                 method: 'DELETE',
             });
 
@@ -114,7 +114,7 @@ export default function AdminUser() {
         if (screenHeight < 600) {
             setUsersPerPage(3);
         } else if (screenHeight < 900) {
-            setUsersPerPage(7);
+            setUsersPerPage(6);
         } else {
             setUsersPerPage(8);
         }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import Cookies from 'js-cookie';
-import '../style/Connexion.css';
+import '../style/InscriptionConnexion.css';
 
 const InputField = ({ label, type, placeholder, value, onChange }) => {
     return (
@@ -13,7 +13,7 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
     );
 };
 
-function Connexion() {
+function InscriptionConnexion() {
     Cookies.remove('userId');
     // localStorage.clear();
     // const ls = localStorage;
@@ -240,4 +240,4 @@ function Connexion() {
     );
 }
 
-export default Connexion;
+export default InscriptionConnexion;

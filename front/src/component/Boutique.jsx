@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Card, ListGroup } from 'react-bootstrap';
 import { Link} from 'react-router-dom';
-import '../style/Shop.css';
+import '../style/Boutique.css';
 
 
-function Shop() {
+function Boutique() {
     const [Product, setProduct] = useState([]);
 
     //Récuperer tous les produits 
@@ -23,10 +23,10 @@ function Shop() {
     }, []);
 
     return (
-        <Container fluid="">
+        <Container className='my-3'>
             <Row>
-                <Col className='m-3' xs={12}>
-                    <h2>Liste des produits</h2>
+                <Col xs={12}>
+                    <h1>Liste des produits</h1>
                     {Product.length > 0 ? (
                         <Row>
                             {Product.map((product) => (
@@ -54,7 +54,6 @@ function Shop() {
                         </Row>
                     ) : (
                         <p>Pas de produit</p>
-
                     )}
                 </Col>
             </Row>
@@ -62,4 +61,4 @@ function Shop() {
     );
 }
 
-export default Shop;
+export default Boutique;

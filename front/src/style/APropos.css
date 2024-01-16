@@ -1,0 +1,14 @@
+.titre {
+    color: #c92b39;
+    text-align: start
+}
+
+.texte {
+    text-align: justify;
+}
+
+.merci {
+    color: #c92b39;
+    text-align: center;
+    text-decoration: underline;
+}

@@ -3,10 +3,11 @@ import { Route, Routes } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Navbar from './Navbar';
 import Home from './Home';
-import Shop from './Shop';
+import Boutique from './Boutique';
 import Produit from './Produit';
 import Panier from './Panier';
-import Connexion from './Connexion';
+import APropos from'./APropos';
+import InscriptionConnexion from './InscriptionConnexion';
 import Profil from './Profil'
 import AdminProduit from './AdminProduit';
 import AdminUser from './AdminUser';
@@ -35,16 +36,17 @@ function App() {
   }, [userId]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div className='site-container'>
       <Navbar userId={userId} setUserId={setUserId} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
-      <div style={{ flexGrow: 1 }} className='bg-color'>
+      <div className='flexible-grow'>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/shop' element={<Shop />} />
+          <Route path='/Boutique' element={<Boutique />} />
           <Route path="/Produit/:productId" element={<Produit />} />
           <Route path='/Panier' element={<Panier userId={userId} />} />
-          <Route path='/connexion' element={<Connexion />} />
-          <Route path='/profil' element={<Profil userId={userId} />} />
+          <Route path='/APropos' element={<APropos />}/>
+          <Route path='/InscriptionConnexion' element={<InscriptionConnexion />} />
+          <Route path='/Profil' element={<Profil userId={userId} />} />
           <Route path='/AdminProduit' element={<AdminProduit />} />
           <Route path='/AdminUser' element={<AdminUser />} />
         </Routes>
