@@ -5,6 +5,8 @@ import Cookies from 'js-cookie';
 import '../style/Navbar.css'
 
 function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
+    const baseUrl = 'http://localhost:8000';
+
     const navigate = useNavigate();
     const [userName, setUserName] = useState('');
 
@@ -18,7 +20,7 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
 
     const getUserInfo = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:8000/user_name/${userId}`);
+            const response = await fetch(`${baseUrl}/api/users/getUserName/${userId}`);
             const data = await response.json();
             setUserName(data[0].user_name);
         } catch (error) {

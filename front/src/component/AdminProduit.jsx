@@ -13,6 +13,8 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 };
 
 function AdminProduit() {
+    const baseUrl = 'http://localhost:8000';
+
     const [Product, setProduct] = useState([]);
 
     //Pour la création
@@ -46,7 +48,7 @@ function AdminProduit() {
     //Récuperer tous les produits 
     const RecupProduct = async () => {
         try {
-            const reponse = await fetch('http://localhost:8000/produit')
+            const reponse = await fetch(`${baseUrl}/api/produits/getAllProduits`)
             const data = await reponse.json();
             setProduct(data);
         } catch (error) {
@@ -85,7 +87,7 @@ function AdminProduit() {
                 formData.append('description', newDataProduct.description);
                 formData.append('image', newDataProduct.image);
 
-                const reponse = await fetch('http://localhost:8000/adminProduit', {
+                const reponse = await fetch(`${baseUrl}/api/adminProduits/addProduit`, {
                     method: 'POST',
                     body: formData,
                 });
@@ -146,7 +148,7 @@ function AdminProduit() {
                 if (editDataProduct.quantite) requestBody.quantite = editDataProduct.quantite;
                 if (editDataProduct.description) requestBody.description = editDataProduct.description;
 
-                const editProductResponse = await fetch(`http://localhost:8000/adminProduit/${selectedProductId}`, {
+                const editProductResponse = await fetch(`${baseUrl}/api/adminProduits/editProduit/${selectedProductId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -208,7 +210,7 @@ function AdminProduit() {
     //Début partie Suppression
     const handleDeleteProduct = async (productId) => {
         try {
-            const deleteProductResponse = await fetch(`http://localhost:8000/adminProduit/${productId}`, {
+            const deleteProductResponse = await fetch(`${baseUrl}/api/adminProduits/deleteProduit/${selectedProductId}`, {
                 method: 'DELETE',
             });
 

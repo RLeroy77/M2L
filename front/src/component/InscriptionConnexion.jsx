@@ -14,6 +14,8 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 };
 
 function InscriptionConnexion() {
+    const baseUrl = 'http://localhost:8000';
+
     Cookies.remove('userId');
     // localStorage.clear();
     // const ls = localStorage;
@@ -64,7 +66,7 @@ function InscriptionConnexion() {
     const handleAddUser = async () => {
         try {
             if (validateFieldsInscription()) {
-                const reponse = await fetch('http://localhost:8000/utilisateur', {
+                const reponse = await fetch(`${baseUrl}/api/inscriptionConnexion/inscription`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -108,7 +110,7 @@ function InscriptionConnexion() {
 
     const handleConnexion = async () => {
         try {
-            const response = await fetch('http://localhost:8000/connexion', {
+            const response = await fetch(`${baseUrl}/api/inscriptionConnexion/connexion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

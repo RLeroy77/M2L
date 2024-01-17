@@ -5,6 +5,8 @@ import '../style/Produit.css';
 import '../style/Produit.css';
 
 export default function Produit() {
+    const baseUrl = 'http://localhost:8000';
+
     const ls = useMemo(() => localStorage, []);
     const { productId } = useParams(); // Utilisation de useParams directement
     const [product, setProduct] = useState(null);
@@ -14,7 +16,7 @@ export default function Produit() {
     // Récupérer un produit en fonction de son ID
     const RecupProductById = async (productId) => {
         try {
-            const reponse = await fetch(`http://localhost:8000/produit/${productId}`);
+            const reponse = await fetch(`${baseUrl}/api/produits/getProduitById/${productId}`);
             const data = await reponse.json();
             setProduct(data);
         } catch (error) {

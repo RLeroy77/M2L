@@ -6,6 +6,8 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import '../style/AdminUser.css';
 
 export default function AdminUser() {
+    const baseUrl = 'http://localhost:8000';
+
     const [User, setUser] = useState([]);
     const [userId, setUserId] = useState(null);
 
@@ -24,7 +26,7 @@ export default function AdminUser() {
     // Récuperer tous les utilisateurs
     const RecupUser = async () => {
         try {
-            const reponse = await fetch('http://localhost:8000/adminUser');
+            const reponse = await fetch(`${baseUrl}/api/adminUsers/getAllUsers`);
             const data = await reponse.json();
             setUser(data.map(user => ({
                 ...user,
@@ -47,7 +49,7 @@ export default function AdminUser() {
             // Récupérer la nouvelle valeur du rôle (admin) pour l'utilisateur actuel
             const newUser = User.find(user => user.id === userId);
             // Envoyer la nouvelle valeur au backend
-            const response = await fetch(`http://localhost:8000/adminUser/role/${userId}`, {
+            const response = await fetch(`${baseUrl}/api/adminUsers/editUserRole/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +80,7 @@ export default function AdminUser() {
     //Début partie Suppression
     const handleDeleteUser = async (userId) => {
         try {
-            const deleteUserResponse = await fetch(`http://localhost:8000/adminUser/${userId}`, {
+            const deleteUserResponse = await fetch(`${baseUrl}/api/adminUsers/deleteUser/${userId}`, {
                 method: 'DELETE',
             });
 

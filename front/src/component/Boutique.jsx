@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Card, ListGroup } from 'react-bootstrap';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../style/Boutique.css';
 
 
 function Boutique() {
+    const baseUrl = 'http://localhost:8000';
+
     const [Product, setProduct] = useState([]);
 
     //Récuperer tous les produits 
     const RecupProduct = async () => {
         try {
-            const reponse = await fetch('http://localhost:8000/produit')
+            const reponse = await fetch(`${baseUrl}/api/produits/getAllProduits`)
             const data = await reponse.json();
             setProduct(data);
         } catch (error) {

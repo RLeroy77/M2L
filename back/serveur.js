@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 });
 
 
-
+//Fait
 // Route pour inscrire un utilisateur utilisé dans InscriptionConnexion.jsx
 app.post('/inscription', withDBConnection, async (req, res) => {
     try {
@@ -74,6 +74,7 @@ app.post('/inscription', withDBConnection, async (req, res) => {
     }
 });
 
+//Fait
 // Route pour la connexion utilisé dans InscriptionConnexion.jsx
 app.post('/connexion', withDBConnection, async (req, res) => {
     const { user_name, mot_de_passe } = req.body;
@@ -96,7 +97,7 @@ app.post('/connexion', withDBConnection, async (req, res) => {
 });
 
 
-
+//Fait
 //Route pour obtenir le rôle par ID utilisé dans App.jsx
 app.get('/role/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -112,7 +113,7 @@ app.get('/role/:id', withDBConnection, async (req, res) => {
 })
 
 
-
+//Fait
 // Route pour obtenir un user_name par ID utilisé dans Navbar.jsx
 app.get('/user_name/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -128,7 +129,7 @@ app.get('/user_name/:id', withDBConnection, async (req, res) => {
 });
 
 
-
+//Fait
 // Route pour obtenir un produit en fonction de son ID dans Produit.jsx
 app.get('/produit/:id', withDBConnection, async (req, res) => {
     try {
@@ -152,6 +153,7 @@ app.get('/produit/:id', withDBConnection, async (req, res) => {
     }
 });
 
+//Fait
 //Route pour mettre à jour la quantité des produits lors de la validation du panier dans Panier.jsx
 app.put('/panier', withDBConnection, async (req, res) => {
     try {
@@ -182,7 +184,7 @@ app.put('/panier', withDBConnection, async (req, res) => {
 });
 
 
-
+//Fait
 //Route pour obtenir tous les produits dans AdminProduit.jsx et Boutique.jsx
 app.get('/produit', withDBConnection, async (req, res) => {
     try {
@@ -196,6 +198,7 @@ app.get('/produit', withDBConnection, async (req, res) => {
     }
 });
 
+//Fait
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
 app.post('/adminProduit', withDBConnection, upload.single('image'), async (req, res) => {
     try {
@@ -219,6 +222,7 @@ app.post('/adminProduit', withDBConnection, upload.single('image'), async (req, 
     }
 });
 
+//Fait
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
 app.put('/adminProduit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -275,6 +279,7 @@ app.put('/adminProduit/:id', withDBConnection, async (req, res) => {
     }
 });
 
+//Fait
 //Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
 app.delete('/adminProduit/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -302,7 +307,7 @@ app.delete('/adminProduit/:id', withDBConnection, async (req, res) => {
 
 
 
-
+//Fait
 // Route pour obtenir toutes les utilisateurs dans AdminUser.jsx
 app.get('/adminUser', withDBConnection, async (req, res) => {
     try {
@@ -316,6 +321,7 @@ app.get('/adminUser', withDBConnection, async (req, res) => {
     }
 });
 
+//Fait
 // Route pour mettre à jour le rôle d'un utilisateur fonction de son ID dans AdminUser.jsx
 app.put('/adminUser/role/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
@@ -337,6 +343,8 @@ app.put('/adminUser/role/:id', withDBConnection, async (req, res) => {
     }
 });
 
+
+//Fait
 // Route pour supprimer un utilisateur en fonction de son ID dans AdminUser.jsx
 app.delete('/adminUser/:id', withDBConnection, async (req, res) => {
     const id = req.params.id;
