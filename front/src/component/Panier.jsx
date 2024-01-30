@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Alert, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie';
 import '../style/Panier.css';
 
 function Panier({ userId }) {
@@ -37,6 +38,7 @@ function Panier({ userId }) {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'authorization': Cookies.get('token'),
                     },
                     body: JSON.stringify(produitsAUpdater),
                 });

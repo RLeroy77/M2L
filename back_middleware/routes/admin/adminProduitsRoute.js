@@ -8,7 +8,7 @@ const middelwareAuth = require('../../middleware/middleware')
 // Configuration de multer pour gérer les téléchargements de fichiers
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.resolve(__dirname, '../front/public/images/produits'));
+        cb(null, path.resolve(__dirname, '../../../front/public/images/produits'));
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + '.png');

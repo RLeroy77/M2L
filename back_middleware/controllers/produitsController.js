@@ -1,5 +1,4 @@
 const db = require('../database/database');
-const jwt = require('jsonwebtoken');
 
 //Route pour obtenir tous les produits dans AdminProduit.jsx et Boutique.jsx
 exports.GetAllProduits = async (req, res) => {

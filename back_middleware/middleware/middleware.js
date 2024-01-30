@@ -1,4 +1,5 @@
 const db = require('../database/database');
+const jwt = require('jsonwebtoken');
 
 // Middleware pour gérer la connexion à la base de données
 exports.WithDBConnection = async (req, res, next) => {
@@ -16,7 +17,6 @@ exports.WithDBConnection = async (req, res, next) => {
 //Verif si tu es bien authentifié
 exports.Authentificator = (req, res, next) => {
     const token = req.query.token ? req.query.token : req.headers.authorization;
-    console.log(token);
     if (token && process.env.API_KEY) {
         jwt.verify(token, process.env.API_KEY, (err, decoded) => {
             if (err) {
@@ -30,20 +30,20 @@ exports.Authentificator = (req, res, next) => {
     }
 }
 
-exports.CheckRole = async (req, res) => {
+exports.CheckRole = async (req, res, next) => {
     const token = req.query.token ? req.query.token : req.headers.authorization;
 
     if (token && process.env.API_KEY) {
-        jwt.verify(token, process.env.API_KEY, (err, decoded) => {
+        jwt.verify(token, process.env.API_KEY, async (err, decoded) => {
             if (err) {
                 res.status(401).json({ error: 'Access denied.' });
             } else {
-                const UserId = decoded.UserId;
-                const [rows, fields] = db.pool.execute('SELECT admin FROM utilisateur WHERE id = ?', [UserId],)
-                if (rows[0].admin) {
-                    next();
-                } else {
+                const UserId = decoded.userId;
+                const [rows] = await db.pool.execute('SELECT admin FROM utilisateur WHERE id = ?', [UserId])
+                if (rows[0].admin == 0) {
                     res.status(401).json({ error: 'Access denied.' });
+                } else {
+                    next();
                 }
             }
         })
@@ -51,6 +51,3 @@ exports.CheckRole = async (req, res) => {
         res.status(401).json({ error: 'Access denied.' });
     }
 }
-
-
-

@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Table, Pagination } from 'react-boot
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie';
 import '../style/AdminUser.css';
 
 export default function AdminUser() {
@@ -26,7 +27,11 @@ export default function AdminUser() {
     // Récuperer tous les utilisateurs
     const RecupUser = async () => {
         try {
-            const reponse = await fetch(`${baseUrl}/api/adminUsers/getAllUsers`);
+            const reponse = await fetch(`${baseUrl}/api/adminUsers/getAllUsers`, {
+                headers: {
+                    'authorization': Cookies.get('token'),
+                }
+            });
             const data = await reponse.json();
             setUser(data.map(user => ({
                 ...user,
@@ -53,6 +58,7 @@ export default function AdminUser() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'authorization': Cookies.get('token'),
                 },
                 body: JSON.stringify({ admin: newUser.admin === 1 ? 0 : 1 }), // Envoyer la nouvelle valeur du rôle (admin)
             });
@@ -82,6 +88,9 @@ export default function AdminUser() {
         try {
             const deleteUserResponse = await fetch(`${baseUrl}/api/adminUsers/deleteUser/${userId}`, {
                 method: 'DELETE',
+                headers: {
+                    'authorization': Cookies.get('token'),
+                },
             });
 
             if (deleteUserResponse.ok) {

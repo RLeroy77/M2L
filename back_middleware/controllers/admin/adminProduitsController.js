@@ -1,19 +1,19 @@
 const db = require('../../database/database');
-const jwt = require('jsonwebtoken');
 const sharp = require('sharp');
-// const fs = require('fs').promises;
 const fs = require('fs/promises')
-
+const path = require('path');
+const crypto = require('crypto')
 
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
 exports.addProduit = async (req, res) => {
     try {
+        console.log(req.body)
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const image = req.file;
         // Utiliser sharp pour redimensionner l'image
-        const resizedImagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
+        const resizedImagePath = path.join(__dirname, '../../../front/public/images/produits', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
         // Supprimer l'image d'origine après redimensionnement
         await fs.unlink(image.path);
@@ -87,7 +87,7 @@ exports.editProduit = async (req, res) => {
 //Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
 exports.DeleteProduit = async (req, res) => {
     const id = req.params.id;
-    const imagePath = path.join(__dirname, '../front/public/images/produits', `${id}.png`);
+    const imagePath = path.join(__dirname, '../../../front/public/images/produits', `${id}.png`);
     try {
         // Vérifier si le produit existe avant de le supprimer
         const [rows] = await db.pool.execute('SELECT id FROM produit WHERE id = ?', [id]);

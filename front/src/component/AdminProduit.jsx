@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
+import Cookies from 'js-cookie';
 import '../style/AdminProduit.css';
 
 
@@ -89,6 +90,9 @@ function AdminProduit() {
 
                 const reponse = await fetch(`${baseUrl}/api/adminProduits/addProduit`, {
                     method: 'POST',
+                    headers: {
+                        'authorization': Cookies.get('token'),
+                    },
                     body: formData,
                 });
 
@@ -152,6 +156,7 @@ function AdminProduit() {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'authorization': Cookies.get('token'),
                     },
                     body: JSON.stringify(requestBody),
                 });
@@ -208,14 +213,17 @@ function AdminProduit() {
 
 
     //Début partie Suppression
-    const handleDeleteProduct = async (productId) => {
+    const handleDeleteProduct = async (selectedProductId) => {
         try {
             const deleteProductResponse = await fetch(`${baseUrl}/api/adminProduits/deleteProduit/${selectedProductId}`, {
                 method: 'DELETE',
+                headers: {
+                    'authorization': Cookies.get('token'),
+                },
             });
 
             if (deleteProductResponse.ok) {
-                const updatedProductList = Product.filter((product) => product.id !== productId);
+                const updatedProductList = Product.filter((product) => product.id !== selectedProductId);
                 setProduct(updatedProductList);
                 setValideDelete('Produit supprimé avec succès');
                 setTimeout(() => setValideDelete(''), 2500);
