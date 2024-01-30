@@ -35,7 +35,9 @@ exports.Connexion = async (req, res) => {
         const hashedPassword = rows[0].mot_de_passe;
         const passwordMatch = await bcrypt.compare(mot_de_passe, hashedPassword);
         if (passwordMatch) {
-            res.status(200).json({ userId: rows[0].id, isAdmin: rows[0].admin, message: "Authentification réussie" });
+            //Générer un token JWT valide et renvoyer au client
+            const token = jwt.sign({ userId: rows[0].id }, process.env.API_KEY, { expiresIn: '1h' });
+            res.status(200).json({ token, message: "Authentification réussie" });
         } else {
             res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
         }

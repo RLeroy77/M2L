@@ -11,7 +11,7 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
     const [userName, setUserName] = useState('');
 
     const handleLogout = () => {
-        Cookies.remove('userId');
+        Cookies.remove('token');
         localStorage.clear();
         setUserId(null);
         setIsAdmin(null);

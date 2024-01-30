@@ -4,8 +4,8 @@ const InscriptionConnexionController = require('../controllers/inscriptionConnex
 const middelwareAuth = require('../middleware/middleware')
 
 //Route pour obtenir tous les utilisateurs
-router.post('/inscription', middelwareAuth.withDBConnection, InscriptionConnexionController.Inscription);
-router.post('/connexion', middelwareAuth.withDBConnection, InscriptionConnexionController.Connexion);
+router.post('/inscription', middelwareAuth.WithDBConnection, InscriptionConnexionController.Inscription);
+router.post('/connexion', middelwareAuth.WithDBConnection, InscriptionConnexionController.Connexion);
 
 //Ajoutez d'autres routes au besoin
 

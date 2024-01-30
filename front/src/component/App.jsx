@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 import Navbar from './Navbar';
 import Home from './Home';
@@ -17,24 +18,32 @@ import '../style/App.css';
 function App() {
   const baseUrl = 'http://localhost:8000';
 
-  const [userId, setUserId] = useState(Cookies.get('userId') || null);
+  const [userId, setUserId] = useState("");
   const [isAdmin, setIsAdmin] = useState(null);
 
-  const getUserRole = async (userId) => {
+  const getUserRole = async (decodedUserId) => {
     try {
-      const reponse = await fetch(`${baseUrl}/api/users/getUserRole/${userId}`)
-      const data = await reponse.json();
+      const response = await fetch(`${baseUrl}/api/users/getUserRole/${decodedUserId}`);
+      const data = await response.json();
       setIsAdmin(data[0].admin);
     } catch (error) {
       console.error('Erreur lors de la récupération des informations utilisateur:', error);
     }
-  }
+  };
 
   useEffect(() => {
-    if (userId) {
-      getUserRole(userId);
-    }
-  }, [userId]);
+    const fetchUserData = async () => {
+      const token = Cookies.get('token');
+
+      if (token) {
+        const decodedUserId = jwtDecode(token).userId;
+        setUserId(decodedUserId);
+        await getUserRole(decodedUserId);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <div className='site-container'>

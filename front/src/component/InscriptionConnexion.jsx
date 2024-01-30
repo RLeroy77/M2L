@@ -124,11 +124,9 @@ function InscriptionConnexion() {
             if (response.ok) {
                 const data = await response.json();
                 setValideConnexion('Connexion réussie !');
-                console.log('Utilisateur authentifié avec succès', data.userId, data.isAdmin);
-                // Stocker dans localStorage
-                // ls.setItem('userId', data.userId);
+                console.log('Utilisateur authentifié avec succès', data.token);
                 //Stocker dans les Cookies
-                Cookies.set('userId', data.userId, { expires: 1, secure: true, sameSite: 'strict' });
+                Cookies.set('token', data.token, { expires: 1, secure: true, sameSite: 'strict' });
                 // A changer c'est pas bien 
                 setTimeout(() => window.location.reload(), 100);
                 navigate("/")
