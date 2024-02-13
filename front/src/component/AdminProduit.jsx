@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
+import Cookies from 'js-cookie';
 import '../style/AdminProduit.css';
 
 
@@ -12,7 +13,9 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
     );
 };
 
-function AdminProduit() {
+function AdminProduit({ isAdmin }) {
+    const baseUrl = 'http://localhost:8000';
+
     const [Product, setProduct] = useState([]);
 
     //Pour la création
@@ -46,7 +49,7 @@ function AdminProduit() {
     //Récuperer tous les produits 
     const RecupProduct = async () => {
         try {
-            const reponse = await fetch('http://localhost:8000/produit')
+            const reponse = await fetch(`${baseUrl}/api/produits/getAllProduits`)
             const data = await reponse.json();
             setProduct(data);
         } catch (error) {
@@ -85,8 +88,11 @@ function AdminProduit() {
                 formData.append('description', newDataProduct.description);
                 formData.append('image', newDataProduct.image);
 
-                const reponse = await fetch('http://localhost:8000/adminProduit', {
+                const reponse = await fetch(`${baseUrl}/api/adminProduits/addProduit`, {
                     method: 'POST',
+                    headers: {
+                        'authorization': Cookies.get('token'),
+                    },
                     body: formData,
                 });
 
@@ -146,10 +152,11 @@ function AdminProduit() {
                 if (editDataProduct.quantite) requestBody.quantite = editDataProduct.quantite;
                 if (editDataProduct.description) requestBody.description = editDataProduct.description;
 
-                const editProductResponse = await fetch(`http://localhost:8000/adminProduit/${selectedProductId}`, {
+                const editProductResponse = await fetch(`${baseUrl}/api/adminProduits/editProduit/${selectedProductId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'authorization': Cookies.get('token'),
                     },
                     body: JSON.stringify(requestBody),
                 });
@@ -206,14 +213,17 @@ function AdminProduit() {
 
 
     //Début partie Suppression
-    const handleDeleteProduct = async (productId) => {
+    const handleDeleteProduct = async (selectedProductId) => {
         try {
-            const deleteProductResponse = await fetch(`http://localhost:8000/adminProduit/${productId}`, {
+            const deleteProductResponse = await fetch(`${baseUrl}/api/adminProduits/deleteProduit/${selectedProductId}`, {
                 method: 'DELETE',
+                headers: {
+                    'authorization': Cookies.get('token'),
+                },
             });
 
             if (deleteProductResponse.ok) {
-                const updatedProductList = Product.filter((product) => product.id !== productId);
+                const updatedProductList = Product.filter((product) => product.id !== selectedProductId);
                 setProduct(updatedProductList);
                 setValideDelete('Produit supprimé avec succès');
                 setTimeout(() => setValideDelete(''), 2500);
@@ -236,158 +246,166 @@ function AdminProduit() {
 
     return (
         <Container fluid="">
-            <Row>
-                <Col className='m-3' xs={12}>
-                    <h2>Formulaire d'ajout de produit</h2>
-                    <Form encType="multipart/form-data">
-                        <Row>
-                            <Col className='mb-2' xs={12} md={4} xl={3}>
-                                <InputField
-                                    label="Nom"
-                                    type="text"
-                                    placeholder="Nom du produit"
-                                    value={newDataProduct.nom}
-                                    onChange={(e) => handleInputChangeAddProduct('nom', e.target.value)}
-                                />
-                            </Col>
-                            <Col className='mb-2' xs={12} md={4} xl={3}>
-                                <InputField
-                                    label="Prix"
-                                    type="number"
-                                    placeholder="Prix du produit"
-                                    value={newDataProduct.prix}
-                                    onChange={(e) => handleInputChangeAddProduct('prix', e.target.value)}
-                                />
-                            </Col>
-                            <Col className='mb-2' xs={12} md={4} xl={3}>
-                                <InputField
-                                    label="Quantité"
-                                    type="number"
-                                    placeholder="Quantité du produit"
-                                    value={newDataProduct.quantite}
-                                    onChange={(e) => handleInputChangeAddProduct('quantite', e.target.value)}
-                                />
-                            </Col>
-                            <Col className='mb-2' xs={12} md={4} xl={3}>
-                                <InputField
-                                    label="Description"
-                                    type="text"
-                                    placeholder="Description du produit"
-                                    value={newDataProduct.description}
-                                    onChange={(e) => handleInputChangeAddProduct('description', e.target.value)}
-                                />
-                            </Col>
-                            <Col className='mb-2' xs={12} md={4} xl={3}>
-                                <Form.Group controlId={`formImage`}>
-                                    <Form.Label>Image</Form.Label>
-                                    <Form.Control
-                                        type="file"
-                                        accept=".png, .jpg, .jpeg"
-                                        onChange={(e) => handleInputChangeAddProduct('image', e.target.files[0])}
+            {isAdmin === 1 ? (
+                <Row>
+                    <Col className='m-3' xs={12}>
+                        <h2>Formulaire d'ajout de produit</h2>
+                        <Form encType="multipart/form-data">
+                            <Row>
+                                <Col className='mb-2' xs={12} md={4} xl={3}>
+                                    <InputField
+                                        label="Nom"
+                                        type="text"
+                                        placeholder="Nom du produit"
+                                        value={newDataProduct.nom}
+                                        onChange={(e) => handleInputChangeAddProduct('nom', e.target.value)}
                                     />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Button className='btn-good' onClick={handleAddProduct}>Ajouter</Button>
-                        {errorProduct && <p className='error'>{errorProduct}</p>}
-                        {valideProduct && <p className='success'>{valideProduct}</p>}
-                    </Form>
-                </Col>
-                <Col className='m-3' xs={12}>
-                    <h2>Liste des produits</h2>
-                    {errorDelete && <p className='error'>{errorDelete}</p>}
-                    {valideDelete && <p className='success'>{valideDelete}</p>}
-                    {Product.length > 0 ? (
-                        <Row>
-                            {Product.map((product) => (
-                                <Col key={product.id} xs={12} md={6} lg={4} xxl={3}>
-                                    <Card className="d-flex align-items-center justify-content-center mb-2">
-                                        <Card.Img
-                                            variant="top"
-                                            src={process.env.PUBLIC_URL + `/images/produits/${product.id}.png`}
-                                            alt={product.nom}
-                                        />
-                                        <Card.Body>
-                                            <Card.Title>{product.nom}</Card.Title>
-                                            <ListGroup variant="flush">
-                                                <ListGroup.Item>Prix : {product.prix} €</ListGroup.Item>
-                                                <ListGroup.Item>Quantité : {product.quantite}</ListGroup.Item>
-                                                <ListGroup.Item>Description : {product.description}</ListGroup.Item>
-                                            </ListGroup>
-                                            <Button
-                                                className='btn-good m-2'
-                                                onClick={() => showEditForm(product.id)}
-                                            >Modifier
-                                            </Button>
-                                            <Button
-                                                className='btn-delete m-2'
-                                                onClick={() => handleDeleteProduct(product.id)}
-                                            >Supprimer
-                                            </Button>
-                                            {selectedProductId === product.id && (
-                                                <Form>
-                                                    <Row>
-                                                        <Col className='mb-2' xs={12}>
-                                                            <InputField
-                                                                label="Nom"
-                                                                type="text"
-                                                                placeholder="Nom du produit"
-                                                                value={editDataProduct.nom}
-                                                                onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
-                                                            />
-                                                        </Col>
-                                                        <Col className='mb-2' xs={12}>
-                                                            <InputField
-                                                                label="Prix"
-                                                                type="number"
-                                                                placeholder="Prix du produit"
-                                                                value={editDataProduct.prix}
-                                                                onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
-                                                            />
-                                                        </Col>
-                                                        <Col className='mb-2' xs={12}>
-                                                            <InputField
-                                                                label="Quantité"
-                                                                type="number"
-                                                                placeholder="Quantité du produit"
-                                                                value={editDataProduct.quantite}
-                                                                onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
-                                                            />
-                                                        </Col>
-                                                        <Col className='mb-2' xs={12}>
-                                                            <InputField
-                                                                label="Description"
-                                                                type="text"
-                                                                placeholder="Description du produit"
-                                                                value={editDataProduct.description}
-                                                                onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
-                                                            />
-                                                        </Col>
-                                                    </Row>
-                                                    <Button
-                                                        className='btn-delete m-2'
-                                                        onClick={cancelEdit}
-                                                    >Annuler
-                                                    </Button>
-                                                    <Button
-                                                        className='btn-good m-2'
-                                                        onClick={handleEditProduct}
-                                                    >Enregister
-                                                    </Button>
-                                                    {errorEdit && <p className='error'>{errorEdit}</p>}
-                                                    {valideEdit && <p className='success'>{valideEdit}</p>}
-                                                </Form>
-                                            )}
-                                        </Card.Body>
-                                    </Card>
                                 </Col>
-                            ))}
-                        </Row>
-                    ) : (
-                        <p>Pas de produit</p>
-                    )}
-                </Col>
-            </Row>
+                                <Col className='mb-2' xs={12} md={4} xl={3}>
+                                    <InputField
+                                        label="Prix"
+                                        type="number"
+                                        placeholder="Prix du produit"
+                                        value={newDataProduct.prix}
+                                        onChange={(e) => handleInputChangeAddProduct('prix', e.target.value)}
+                                    />
+                                </Col>
+                                <Col className='mb-2' xs={12} md={4} xl={3}>
+                                    <InputField
+                                        label="Quantité"
+                                        type="number"
+                                        placeholder="Quantité du produit"
+                                        value={newDataProduct.quantite}
+                                        onChange={(e) => handleInputChangeAddProduct('quantite', e.target.value)}
+                                    />
+                                </Col>
+                                <Col className='mb-2' xs={12} md={4} xl={3}>
+                                    <InputField
+                                        label="Description"
+                                        type="text"
+                                        placeholder="Description du produit"
+                                        value={newDataProduct.description}
+                                        onChange={(e) => handleInputChangeAddProduct('description', e.target.value)}
+                                    />
+                                </Col>
+                                <Col className='mb-2' xs={12} md={4} xl={3}>
+                                    <Form.Group controlId={`formImage`}>
+                                        <Form.Label>Image</Form.Label>
+                                        <Form.Control
+                                            type="file"
+                                            accept=".png, .jpg, .jpeg"
+                                            onChange={(e) => handleInputChangeAddProduct('image', e.target.files[0])}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Button className='btn-good' onClick={handleAddProduct}>Ajouter</Button>
+                            {errorProduct && <p className='error'>{errorProduct}</p>}
+                            {valideProduct && <p className='success'>{valideProduct}</p>}
+                        </Form>
+                    </Col>
+                    <Col className='m-3' xs={12}>
+                        <h2>Liste des produits</h2>
+                        {errorDelete && <p className='error'>{errorDelete}</p>}
+                        {valideDelete && <p className='success'>{valideDelete}</p>}
+                        {Product.length > 0 ? (
+                            <Row>
+                                {Product.map((product) => (
+                                    <Col key={product.id} xs={12} md={6} lg={4} xxl={3}>
+                                        <Card className="d-flex align-items-center justify-content-center mb-2">
+                                            <Card.Img
+                                                variant="top"
+                                                src={process.env.PUBLIC_URL + `/images/produits/${product.id}.png`}
+                                                alt={product.nom}
+                                            />
+                                            <Card.Body>
+                                                <Card.Title>{product.nom}</Card.Title>
+                                                <ListGroup variant="flush">
+                                                    <ListGroup.Item>Prix : {product.prix} €</ListGroup.Item>
+                                                    <ListGroup.Item>Quantité : {product.quantite}</ListGroup.Item>
+                                                    <ListGroup.Item>Description : {product.description}</ListGroup.Item>
+                                                </ListGroup>
+                                                <Button
+                                                    className='btn-good m-2'
+                                                    onClick={() => showEditForm(product.id)}
+                                                >Modifier
+                                                </Button>
+                                                <Button
+                                                    className='btn-delete m-2'
+                                                    onClick={() => handleDeleteProduct(product.id)}
+                                                >Supprimer
+                                                </Button>
+                                                {selectedProductId === product.id && (
+                                                    <Form>
+                                                        <Row>
+                                                            <Col className='mb-2' xs={12}>
+                                                                <InputField
+                                                                    label="Nom"
+                                                                    type="text"
+                                                                    placeholder="Nom du produit"
+                                                                    value={editDataProduct.nom}
+                                                                    onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
+                                                                />
+                                                            </Col>
+                                                            <Col className='mb-2' xs={12}>
+                                                                <InputField
+                                                                    label="Prix"
+                                                                    type="number"
+                                                                    placeholder="Prix du produit"
+                                                                    value={editDataProduct.prix}
+                                                                    onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
+                                                                />
+                                                            </Col>
+                                                            <Col className='mb-2' xs={12}>
+                                                                <InputField
+                                                                    label="Quantité"
+                                                                    type="number"
+                                                                    placeholder="Quantité du produit"
+                                                                    value={editDataProduct.quantite}
+                                                                    onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
+                                                                />
+                                                            </Col>
+                                                            <Col className='mb-2' xs={12}>
+                                                                <InputField
+                                                                    label="Description"
+                                                                    type="text"
+                                                                    placeholder="Description du produit"
+                                                                    value={editDataProduct.description}
+                                                                    onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
+                                                                />
+                                                            </Col>
+                                                        </Row>
+                                                        <Button
+                                                            className='btn-delete m-2'
+                                                            onClick={cancelEdit}
+                                                        >Annuler
+                                                        </Button>
+                                                        <Button
+                                                            className='btn-good m-2'
+                                                            onClick={handleEditProduct}
+                                                        >Enregister
+                                                        </Button>
+                                                        {errorEdit && <p className='error'>{errorEdit}</p>}
+                                                        {valideEdit && <p className='success'>{valideEdit}</p>}
+                                                    </Form>
+                                                )}
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
+                        ) : (
+                            <p>Pas de produit</p>
+                        )}
+                    </Col>
+                </Row>
+            ) : (
+                <Row>
+                    <Col>
+                        <h2>Accès non autorisé</h2>
+                    </Col>
+                </Row>
+            )}
         </Container>
     )
 };

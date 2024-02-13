@@ -3,9 +3,12 @@ import { Container, Row, Col, Button, Alert, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie';
 import '../style/Panier.css';
 
 function Panier({ userId }) {
+    const baseUrl = 'http://localhost:8000';
+
     const ls = useMemo(() => localStorage, []);
     const [Panier, setPanier] = useState([]);
     const [errorValidation, setErrorValidation] = useState('');
@@ -31,10 +34,11 @@ function Panier({ userId }) {
                 }));
                 console.log(produitsAUpdater)
                 // Envoyer la requête PUT au backend avec les mises à jour
-                const response = await fetch('http://localhost:8000/panier', {
+                const response = await fetch(`${baseUrl}/api/produits/editProduitQuantite`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'authorization': Cookies.get('token'),
                     },
                     body: JSON.stringify(produitsAUpdater),
                 });

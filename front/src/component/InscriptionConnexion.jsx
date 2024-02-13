@@ -14,6 +14,8 @@ const InputField = ({ label, type, placeholder, value, onChange }) => {
 };
 
 function InscriptionConnexion() {
+    const baseUrl = 'http://localhost:8000';
+
     Cookies.remove('userId');
     // localStorage.clear();
     // const ls = localStorage;
@@ -64,7 +66,7 @@ function InscriptionConnexion() {
     const handleAddUser = async () => {
         try {
             if (validateFieldsInscription()) {
-                const reponse = await fetch('http://localhost:8000/utilisateur', {
+                const reponse = await fetch(`${baseUrl}/api/inscriptionConnexion/inscription`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -108,7 +110,7 @@ function InscriptionConnexion() {
 
     const handleConnexion = async () => {
         try {
-            const response = await fetch('http://localhost:8000/connexion', {
+            const response = await fetch(`${baseUrl}/api/inscriptionConnexion/connexion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,11 +124,9 @@ function InscriptionConnexion() {
             if (response.ok) {
                 const data = await response.json();
                 setValideConnexion('Connexion réussie !');
-                console.log('Utilisateur authentifié avec succès', data.userId, data.isAdmin);
-                // Stocker dans localStorage
-                // ls.setItem('userId', data.userId);
+                console.log('Utilisateur authentifié avec succès', data.token);
                 //Stocker dans les Cookies
-                Cookies.set('userId', data.userId, { expires: 1, secure: true, sameSite: 'strict' });
+                Cookies.set('token', data.token, { expires: 1, secure: true, sameSite: 'strict' });
                 // A changer c'est pas bien 
                 setTimeout(() => window.location.reload(), 100);
                 navigate("/")

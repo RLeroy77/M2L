@@ -3,9 +3,12 @@ import { Container, Row, Col, Form, Button, Table, Pagination } from 'react-boot
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie';
 import '../style/AdminUser.css';
 
-export default function AdminUser() {
+export default function AdminUser({ isAdmin }) {
+    const baseUrl = 'http://localhost:8000';
+
     const [User, setUser] = useState([]);
     const [userId, setUserId] = useState(null);
 
@@ -24,7 +27,11 @@ export default function AdminUser() {
     // Récuperer tous les utilisateurs
     const RecupUser = async () => {
         try {
-            const reponse = await fetch('http://localhost:8000/adminUser');
+            const reponse = await fetch(`${baseUrl}/api/adminUsers/getAllUsers`, {
+                headers: {
+                    'authorization': Cookies.get('token'),
+                }
+            });
             const data = await reponse.json();
             setUser(data.map(user => ({
                 ...user,
@@ -47,10 +54,11 @@ export default function AdminUser() {
             // Récupérer la nouvelle valeur du rôle (admin) pour l'utilisateur actuel
             const newUser = User.find(user => user.id === userId);
             // Envoyer la nouvelle valeur au backend
-            const response = await fetch(`http://localhost:8000/adminUser/role/${userId}`, {
+            const response = await fetch(`${baseUrl}/api/adminUsers/editUserRole/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'authorization': Cookies.get('token'),
                 },
                 body: JSON.stringify({ admin: newUser.admin === 1 ? 0 : 1 }), // Envoyer la nouvelle valeur du rôle (admin)
             });
@@ -78,8 +86,11 @@ export default function AdminUser() {
     //Début partie Suppression
     const handleDeleteUser = async (userId) => {
         try {
-            const deleteUserResponse = await fetch(`http://localhost:8000/adminUser/${userId}`, {
+            const deleteUserResponse = await fetch(`${baseUrl}/api/adminUsers/deleteUser/${userId}`, {
                 method: 'DELETE',
+                headers: {
+                    'authorization': Cookies.get('token'),
+                },
             });
 
             if (deleteUserResponse.ok) {
@@ -135,80 +146,88 @@ export default function AdminUser() {
 
     return (
         <Container fluid="">
-            <Row>
-                <Col className='m-3' xs={12}>
-                    <h2>Liste des utilisateurs :</h2>
-                    {errorDelete && <p className='error'>{errorDelete}</p>}
-                    {valideDelete && <p className='success'>{valideDelete}</p>}
-                    {User.length > 0 ? (
-                        <React.Fragment>
-                            <Table className='mt-2' responsive striped bordered hover variant="light">
-                                <thead>
-                                    <tr className="text-center">
-                                        <th>Nom d'utilisateur</th>
-                                        <th>Nom</th>
-                                        <th>Prénom</th>
-                                        <th>Date de création</th>
-                                        <th>Date de mise à jour</th>
-                                        <th>Admin</th>
-                                        <th>Interaction</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentUsers.map((user) => (
-                                        <tr className="align-middle" key={user.id}>
-                                            <td>{user.user_name}</td>
-                                            <td>{user.nom}</td>
-                                            <td>{user.prenom}</td>
-                                            <td>{user.formattedDateCreation}</td>
-                                            <td>{user.formattedDateMAJ}</td>
-                                            <td>
-                                                <div className="d-flex align-items-center justify-content-center">
-                                                    <Form.Check
-                                                        className="custom-switch"
-                                                        type="switch"
-                                                        id={`custom-switch-${user.id}`}
-                                                        label=""
-                                                        checked={user.admin === 1}
-                                                        onChange={() => handleSwitchChange(user.id)}
-                                                    />
-                                                    {user.id === userId && (
-                                                        <React.Fragment>
-                                                            {errorRole && <p className='error'>{errorRole}</p>}
-                                                            {validRole && <p className='success'>{validRole}</p>}
-                                                        </React.Fragment>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                <Button size='sm'
-                                                    className='btn-delete m-2'
-                                                    onClick={() => handleDeleteUser(user.id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </Button>
-                                            </td>
+            {isAdmin === 1 ? (
+                <Row>
+                    <Col className='m-3' xs={12}>
+                        <h2>Liste des utilisateurs :</h2>
+                        {errorDelete && <p className='error'>{errorDelete}</p>}
+                        {valideDelete && <p className='success'>{valideDelete}</p>}
+                        {User.length > 0 ? (
+                            <React.Fragment>
+                                <Table className='mt-2' responsive striped bordered hover variant="light">
+                                    <thead>
+                                        <tr className="text-center">
+                                            <th>Nom d'utilisateur</th>
+                                            <th>Nom</th>
+                                            <th>Prénom</th>
+                                            <th>Date de création</th>
+                                            <th>Date de mise à jour</th>
+                                            <th>Admin</th>
+                                            <th>Interaction</th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentUsers.map((user) => (
+                                            <tr className="align-middle" key={user.id}>
+                                                <td>{user.user_name}</td>
+                                                <td>{user.nom}</td>
+                                                <td>{user.prenom}</td>
+                                                <td>{user.formattedDateCreation}</td>
+                                                <td>{user.formattedDateMAJ}</td>
+                                                <td>
+                                                    <div className="d-flex align-items-center justify-content-center">
+                                                        <Form.Check
+                                                            className="custom-switch"
+                                                            type="switch"
+                                                            id={`custom-switch-${user.id}`}
+                                                            label=""
+                                                            checked={user.admin === 1}
+                                                            onChange={() => handleSwitchChange(user.id)}
+                                                        />
+                                                        {user.id === userId && (
+                                                            <React.Fragment>
+                                                                {errorRole && <p className='error'>{errorRole}</p>}
+                                                                {validRole && <p className='success'>{validRole}</p>}
+                                                            </React.Fragment>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    <Button size='sm'
+                                                        className='btn-delete m-2'
+                                                        onClick={() => handleDeleteUser(user.id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrash} />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                                <Pagination className="justify-content-center">
+                                    {pageArray.map((_, index) => (
+                                        <Pagination.Item
+                                            key={index + 1}
+                                            active={index + 1 === currentPage}
+                                            onClick={() => paginate(index + 1)}
+                                        >
+                                            {index + 1}
+                                        </Pagination.Item>
                                     ))}
-                                </tbody>
-                            </Table>
-                            <Pagination className="justify-content-center">
-                                {pageArray.map((_, index) => (
-                                    <Pagination.Item
-                                        key={index + 1}
-                                        active={index + 1 === currentPage}
-                                        onClick={() => paginate(index + 1)}
-                                    >
-                                        {index + 1}
-                                    </Pagination.Item>
-                                ))}
-                            </Pagination>
-                        </React.Fragment>
-                    ) : (
-                        <p>Pas d'utilisateur</p>
-                    )}
-                </Col>
-            </Row>
+                                </Pagination>
+                            </React.Fragment>
+                        ) : (
+                            <p>Pas d'utilisateur</p>
+                        )}
+                    </Col>
+                </Row>
+            ) : (
+                <Row>
+                    <Col>
+                        <h2>Accès non autorisé</h2>
+                    </Col>
+                </Row>
+            )}
         </Container>
     )
 }
