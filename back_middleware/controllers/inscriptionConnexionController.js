@@ -25,7 +25,6 @@ exports.Inscription = async (req, res) => {
 
 // Route pour la connexion utilisé dans InscriptionConnexion.jsx
 exports.Connexion = async (req, res) => {
-    console.log(req.body);
     const { user_name, mot_de_passe } = req.body;
     try {
         const [rows] = await db.pool.execute('SELECT * FROM utilisateur WHERE user_name = ?', [user_name]);

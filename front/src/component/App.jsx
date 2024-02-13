@@ -57,8 +57,8 @@ function App() {
           <Route path='/APropos' element={<APropos />} />
           <Route path='/InscriptionConnexion' element={<InscriptionConnexion />} />
           <Route path='/Profil' element={<Profil userId={userId} />} />
-          <Route path='/AdminProduit' element={<AdminProduit />} />
-          <Route path='/AdminUser' element={<AdminUser />} />
+          <Route path='/AdminProduit' element={<AdminProduit isAdmin={isAdmin} />} />
+          <Route path='/AdminUser' element={<AdminUser isAdmin={isAdmin} />} />
         </Routes>
       </div>
       <Footer />
