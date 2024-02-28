@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -28,12 +28,6 @@ function CreateProduitForm() {
             .required("Veuillez entrer la description"),
         image: yup
             .mixed()
-            .test('fileSize', "L'image ne doit pas dépasser 5 Mo", (value) => {
-                return value && value[0].size <= 5000000;
-            })
-            .test('fileType', 'Veuillez télécharger une image valide', (value) => {
-                return value && ['image/jpeg', 'image/png', 'image/gif'].includes(value[0].type);
-            })
             .required("Veuillez entrer l'image"),
     }).required();
 

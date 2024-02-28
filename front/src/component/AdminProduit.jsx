@@ -4,16 +4,6 @@ import Cookies from 'js-cookie';
 import '../style/AdminProduit.css';
 import CreateProduit from './Form/CreateProduitForm';
 
-
-const InputField = ({ label, type, placeholder, value, onChange }) => {
-    return (
-        <Form.Group controlId={`form${label}`}>
-            <Form.Label>{label}</Form.Label>
-            <Form.Control type={type} placeholder={placeholder} value={value} onChange={onChange} />
-        </Form.Group>
-    );
-};
-
 function AdminProduit({ isAdmin }) {
     const baseUrl = 'http://localhost:8000';
 
@@ -210,52 +200,52 @@ function AdminProduit({ isAdmin }) {
                                                     <Form>
                                                         <Row>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Nom"
-                                                                    type="text"
-                                                                    placeholder="Nom du produit"
-                                                                    value={editDataProduct.nom}
-                                                                    onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Nom">
+                                                                    <Form.Label>Nom</Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Nom du produit"
+                                                                        value={editDataProduct.nom}
+                                                                        onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Prix"
-                                                                    type="number"
-                                                                    placeholder="Prix du produit"
-                                                                    value={editDataProduct.prix}
-                                                                    onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Prix">
+                                                                    <Form.Label>Prix</Form.Label>
+                                                                    <Form.Control
+                                                                        type="number"
+                                                                        placeholder="Prix du produit"
+                                                                        value={editDataProduct.prix}
+                                                                        onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Quantité"
-                                                                    type="number"
-                                                                    placeholder="Quantité du produit"
-                                                                    value={editDataProduct.quantite}
-                                                                    onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Quantite">
+                                                                    <Form.Label>Quantité</Form.Label>
+                                                                    <Form.Control
+                                                                        type="number"
+                                                                        placeholder="Quantité du produit"
+                                                                        value={editDataProduct.quantite}
+                                                                        onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Description"
-                                                                    type="text"
-                                                                    placeholder="Description du produit"
-                                                                    value={editDataProduct.description}
-                                                                    onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Description">
+                                                                    <Form.Label>Description</Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Description du produit"
+                                                                        value={editDataProduct.description}
+                                                                        onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                         </Row>
-                                                        <Button
-                                                            className='btn-delete m-2'
-                                                            onClick={cancelEdit}
-                                                        >Annuler
-                                                        </Button>
-                                                        <Button
-                                                            className='btn-good m-2'
-                                                            onClick={handleEditProduct}
-                                                        >Enregister
-                                                        </Button>
+                                                        <Button className='btn-delete m-2' onClick={cancelEdit}>Annuler</Button>
+                                                        <Button className='btn-good m-2' onClick={handleEditProduct}>Enregister</Button>
                                                         {errorEdit && <p className='error'>{errorEdit}</p>}
                                                         {valideEdit && <p className='success'>{valideEdit}</p>}
                                                     </Form>
