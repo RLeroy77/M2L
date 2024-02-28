@@ -49,15 +49,15 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
                     <Nav>
                         {userId ? (
                             <NavDropdown title={userName} id="collapsible-nav-dropdown">
-                                <NavDropdown.Item as={Link} to="/Profil">Profil</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/Profil" className='px-1'>Profil</NavDropdown.Item>
                                 {isAdmin === 1 && (
                                     <>
-                                        <NavDropdown.Item as={Link} to="/AdminUser">Gestion des comptes</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/AdminProduit">Gestion des produits</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/AdminUser" className='px-1'>Gestion des comptes</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/AdminProduit" className='px-1'>Gestion des produits</NavDropdown.Item>
                                     </>
                                 )}
                                 <NavDropdown.Divider />
-                                <NavDropdown.Item onClick={handleLogout}>Déconnexion</NavDropdown.Item>
+                                <NavDropdown.Item onClick={handleLogout} className='px-1'>Déconnexion</NavDropdown.Item>
                             </NavDropdown>
                         ) : (
                             <Nav.Link as={Link} to="/InscriptionConnexion">Connexion/Inscription</Nav.Link>

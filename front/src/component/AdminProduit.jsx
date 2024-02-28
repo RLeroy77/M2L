@@ -2,32 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import '../style/AdminProduit.css';
-
-
-const InputField = ({ label, type, placeholder, value, onChange }) => {
-    return (
-        <Form.Group controlId={`form${label}`}>
-            <Form.Label>{label}</Form.Label>
-            <Form.Control type={type} placeholder={placeholder} value={value} onChange={onChange} />
-        </Form.Group>
-    );
-};
+import CreateProduit from './Form/CreateProduitForm';
 
 function AdminProduit({ isAdmin }) {
     const baseUrl = 'http://localhost:8000';
 
     const [Product, setProduct] = useState([]);
-
-    //Pour la création
-    const [errorProduct, setErrorProduct] = useState('');
-    const [valideProduct, setValideProduct] = useState('');
-    const [newDataProduct, setNewDataProduct] = useState({
-        nom: "",
-        prix: "",
-        quantite: "",
-        description: "",
-        image: null,
-    });
 
     const [selectedProductId, setSelectedProductId] = useState(null);
 
@@ -56,72 +36,6 @@ function AdminProduit({ isAdmin }) {
             console.log(error);
         }
     };
-
-    //Début partie Ajout
-    // Gére les changements d'entrée dans le formulaire de création et de maintenir l'état du formulaire à jour en fonction des modifications de l'utilisateur
-    const handleInputChangeAddProduct = (fieldName, value) => {
-        setNewDataProduct({ ...newDataProduct, [fieldName]: value });
-    };
-
-    //Vérifie si tous les champs du formulaire d'ajout son remplis 
-    const validateFieldsAddProduct = (data) => {
-        const requiredFields = ['nom', 'prix', 'quantite', 'description', 'image'];
-        for (const field of requiredFields) {
-            if (!data[field]) {
-                setErrorProduct(`Veuillez remplir le champ ${field}.`);
-                setTimeout(() => setErrorProduct(''), 2500);
-                return false;
-            }
-        }
-        setErrorProduct('');
-        return true;
-    };
-
-    //Ajoute un produit
-    const handleAddProduct = async () => {
-        try {
-            if (validateFieldsAddProduct(newDataProduct)) {
-                const formData = new FormData();
-                formData.append('nom', newDataProduct.nom);
-                formData.append('prix', newDataProduct.prix);
-                formData.append('quantite', newDataProduct.quantite);
-                formData.append('description', newDataProduct.description);
-                formData.append('image', newDataProduct.image);
-
-                const reponse = await fetch(`${baseUrl}/api/adminProduits/addProduit`, {
-                    method: 'POST',
-                    headers: {
-                        'authorization': Cookies.get('token'),
-                    },
-                    body: formData,
-                });
-
-                if (reponse.ok) {
-                    setValideProduct('Produit ajouté avec succès');
-                    RecupProduct()
-                    setNewDataProduct({
-                        nom: "",
-                        prix: "",
-                        quantite: "",
-                        description: "",
-                        image: null,
-                    });
-                    setTimeout(() => setValideProduct(''), 2500);
-                } else {
-                    console.error("Erreur lors de l'ajout d'un produit :", reponse.statusText);
-                    setErrorProduct("Erreur lors de l'ajout d'un produit : " + reponse.statusText);
-                    setTimeout(() => setErrorProduct(''), 2500);
-                }
-            }
-        } catch (error) {
-            console.error("Erreur lors de l'ajout d'un produit :", error);
-            setErrorProduct("Erreur lors de l'ajout d'un produit : " + error);
-            setTimeout(() => setErrorProduct(''), 2500);
-        }
-    };
-    //Fin partie Ajout
-
-
 
     //Début partie modif
     // Gére les changements d'entrée dans le formulaire de modification et de maintenir l'état du formulaire à jour en fonction des modifications de l'utilisateur
@@ -248,62 +162,9 @@ function AdminProduit({ isAdmin }) {
         <Container fluid="">
             {isAdmin === 1 ? (
                 <Row>
-                    <Col className='m-3' xs={12}>
-                        <h2>Formulaire d'ajout de produit</h2>
-                        <Form encType="multipart/form-data">
-                            <Row>
-                                <Col className='mb-2' xs={12} md={4} xl={3}>
-                                    <InputField
-                                        label="Nom"
-                                        type="text"
-                                        placeholder="Nom du produit"
-                                        value={newDataProduct.nom}
-                                        onChange={(e) => handleInputChangeAddProduct('nom', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={4} xl={3}>
-                                    <InputField
-                                        label="Prix"
-                                        type="number"
-                                        placeholder="Prix du produit"
-                                        value={newDataProduct.prix}
-                                        onChange={(e) => handleInputChangeAddProduct('prix', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={4} xl={3}>
-                                    <InputField
-                                        label="Quantité"
-                                        type="number"
-                                        placeholder="Quantité du produit"
-                                        value={newDataProduct.quantite}
-                                        onChange={(e) => handleInputChangeAddProduct('quantite', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={4} xl={3}>
-                                    <InputField
-                                        label="Description"
-                                        type="text"
-                                        placeholder="Description du produit"
-                                        value={newDataProduct.description}
-                                        onChange={(e) => handleInputChangeAddProduct('description', e.target.value)}
-                                    />
-                                </Col>
-                                <Col className='mb-2' xs={12} md={4} xl={3}>
-                                    <Form.Group controlId={`formImage`}>
-                                        <Form.Label>Image</Form.Label>
-                                        <Form.Control
-                                            type="file"
-                                            accept=".png, .jpg, .jpeg"
-                                            onChange={(e) => handleInputChangeAddProduct('image', e.target.files[0])}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            <Button className='btn-good' onClick={handleAddProduct}>Ajouter</Button>
-                            {errorProduct && <p className='error'>{errorProduct}</p>}
-                            {valideProduct && <p className='success'>{valideProduct}</p>}
-                        </Form>
-                    </Col>
+
+                    <CreateProduit />
+
                     <Col className='m-3' xs={12}>
                         <h2>Liste des produits</h2>
                         {errorDelete && <p className='error'>{errorDelete}</p>}
@@ -339,52 +200,52 @@ function AdminProduit({ isAdmin }) {
                                                     <Form>
                                                         <Row>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Nom"
-                                                                    type="text"
-                                                                    placeholder="Nom du produit"
-                                                                    value={editDataProduct.nom}
-                                                                    onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Nom">
+                                                                    <Form.Label>Nom</Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Nom du produit"
+                                                                        value={editDataProduct.nom}
+                                                                        onChange={(e) => handleInputChangeEditProduct('nom', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Prix"
-                                                                    type="number"
-                                                                    placeholder="Prix du produit"
-                                                                    value={editDataProduct.prix}
-                                                                    onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Prix">
+                                                                    <Form.Label>Prix</Form.Label>
+                                                                    <Form.Control
+                                                                        type="number"
+                                                                        placeholder="Prix du produit"
+                                                                        value={editDataProduct.prix}
+                                                                        onChange={(e) => handleInputChangeEditProduct('prix', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Quantité"
-                                                                    type="number"
-                                                                    placeholder="Quantité du produit"
-                                                                    value={editDataProduct.quantite}
-                                                                    onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Quantite">
+                                                                    <Form.Label>Quantité</Form.Label>
+                                                                    <Form.Control
+                                                                        type="number"
+                                                                        placeholder="Quantité du produit"
+                                                                        value={editDataProduct.quantite}
+                                                                        onChange={(e) => handleInputChangeEditProduct('quantite', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                             <Col className='mb-2' xs={12}>
-                                                                <InputField
-                                                                    label="Description"
-                                                                    type="text"
-                                                                    placeholder="Description du produit"
-                                                                    value={editDataProduct.description}
-                                                                    onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
-                                                                />
+                                                                <Form.Group controlId="EditProduitForm.Description">
+                                                                    <Form.Label>Description</Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        placeholder="Description du produit"
+                                                                        value={editDataProduct.description}
+                                                                        onChange={(e) => handleInputChangeEditProduct('description', e.target.value)}
+                                                                    />
+                                                                </Form.Group>
                                                             </Col>
                                                         </Row>
-                                                        <Button
-                                                            className='btn-delete m-2'
-                                                            onClick={cancelEdit}
-                                                        >Annuler
-                                                        </Button>
-                                                        <Button
-                                                            className='btn-good m-2'
-                                                            onClick={handleEditProduct}
-                                                        >Enregister
-                                                        </Button>
+                                                        <Button className='btn-delete m-2' onClick={cancelEdit}>Annuler</Button>
+                                                        <Button className='btn-good m-2' onClick={handleEditProduct}>Enregister</Button>
                                                         {errorEdit && <p className='error'>{errorEdit}</p>}
                                                         {valideEdit && <p className='success'>{valideEdit}</p>}
                                                     </Form>
