@@ -14,7 +14,6 @@ exports.GetNombreCommandeByData = async (req, res) => {
         const nombreCommandes = resultat[0].nombreCommandes;
         res.status(200).json(nombreCommandes);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Erreur lors de la récupération du nombre de commandes." });
     }
 }
@@ -32,7 +31,6 @@ exports.AddProduitCommande = async (req, res) => {
         );
         res.status(200).json({ message: "Données du produit ajoutées à la commande avec succès" });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Erreur lors de l'ajout des données du produit à la commande" });
     }
 };
@@ -56,7 +54,6 @@ exports.EditProduitCommande = async (req, res) => {
             'UPDATE commande SET quantite = ? WHERE id_utilisateur = ? AND id_produit = ?',
             [nouvelleQuantite, id_utilisateur, id_produit]
         );
-        console.log(nouvelleQuantite);
         res.status(200).json({ message: `Quantité de la commande avec l'id utilisateur : ${id_utilisateur} et l'id produit : ${id_produit} mise à jour avec succès` });
     } catch (error) {
         console.error(error);

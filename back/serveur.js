@@ -20,6 +20,4 @@ app.use('/api/commandes', commandesRoute);
 app.use('/api/produits', produitsRoute);
 app.use('/api/users', usersRoute);
 
-app.listen(8000, () => {
-    console.log("Serveur à l'écoute")
-})
+app.listen(8000);

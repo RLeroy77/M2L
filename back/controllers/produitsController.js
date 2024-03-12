@@ -6,11 +6,9 @@ exports.GetAllProduits = async (req, res) => {
         const [AllProduits] = await db.pool.execute(
             'SELECT id, nom, prix, quantite, description FROM produit'
         );
-        console.log(AllProduits);
         res.status(200).json(AllProduits);
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
+        res.status(500).json({ error: "Erreur lors de la récupération des produits" });
     }
 };
 
@@ -29,8 +27,7 @@ exports.GetProduitById = async (req, res) => {
             res.status(200).json(product);
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
+        res.status(500).json({ error: `Erreur lors de la récupération du produit ${productId} ` });
     }
 };
 

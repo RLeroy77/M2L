@@ -4,12 +4,10 @@ const db = require('../database/database');
 exports.GetUserRole = async (req, res) => {
     const id = req.params.id;
     try {
-        console.log("Lancement de la requête");
-        const [rows] = await db.pool.execute('SELECT admin FROM utilisateur WHERE id = ?', [id]);
-        res.status(200).json(rows);
+        const [UserRole] = await db.pool.execute('SELECT admin FROM utilisateur WHERE id = ?', [id]);
+        res.status(200).json(UserRole);
     } catch (error) {
-        console.log(err);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
+        res.status(500).json({ error: `Erreur lors de la récupération du role de l'utilisateur ${id} ` });
     }
 };
 
@@ -17,11 +15,9 @@ exports.GetUserRole = async (req, res) => {
 exports.GetUserName = async (req, res) => {
     const id = req.params.id;
     try {
-        console.log("Lancement de la requête");
-        const [rows] = await db.pool.execute('SELECT user_name FROM utilisateur WHERE id = ?', [id]);
-        res.status(200).json(rows);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
+        const [UserName] = await db.pool.execute('SELECT user_name FROM utilisateur WHERE id = ?', [id]);
+        res.status(200).json(UserName);
+    } catch (error) {
+        res.status(500).json({ error: `Erreur lors de la récupération du rôle de l'utilisateur ${id}` });
     }
 };

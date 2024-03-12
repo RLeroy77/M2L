@@ -32,6 +32,9 @@ export default function AdminUser({ isAdmin }) {
                     'authorization': Cookies.get('token'),
                 }
             });
+            if (!reponse.ok) {
+                throw new Error('Erreur lors de la récupération des utilisateurs');
+            }
             const data = await reponse.json();
             setUser(data.map(user => ({
                 ...user,
@@ -39,7 +42,7 @@ export default function AdminUser({ isAdmin }) {
                 formattedDateMAJ: format(new Date(user.date_mise_a_jour), 'dd/MM/yyyy')
             })));
         } catch (error) {
-            console.log(error);
+            throw new Error(error);
         }
     };
 
@@ -65,7 +68,6 @@ export default function AdminUser({ isAdmin }) {
 
             if (response.ok) {
                 setUserId(userId);
-                console.log("Rôle modifié avec succès");
                 setValideRole("Rôle modifié avec succès");
                 setTimeout(() => setValideRole(""), 2500);
             } else {

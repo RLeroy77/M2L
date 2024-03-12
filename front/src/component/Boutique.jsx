@@ -16,7 +16,7 @@ function Boutique() {
             const data = await reponse.json();
             setProduct(data);
         } catch (error) {
-            console.log(error);
+            throw new Error(error);
         }
     };
 

@@ -21,7 +21,6 @@ function Panier({ userId }) {
             if (!userId) {
                 setErrorValidation("Veuillez-vous connecter ou vous inscrire pour valider le panier.");
                 setTimeout(() => setErrorValidation(''), 5000);
-                console.log("Veuillez-vous connecter ou vous inscrire pour valider le panier.");
                 return;
             }
             const panier = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
@@ -61,10 +60,10 @@ function Panier({ userId }) {
                 setValideValidation("Commande effectuée avec succès.");
                 setTimeout(() => setValideValidation(''), 5000);
             } else {
-                console.log("Le panier est vide.");
+                throw new Error("Le panier est vide")
             }
         } catch (error) {
-            console.error(error);
+            throw new Error(error);
         }
     };
 
