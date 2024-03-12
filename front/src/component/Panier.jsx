@@ -14,7 +14,7 @@ function Panier({ userId }) {
     const [errorValidation, setErrorValidation] = useState('');
     const [valideValidation, setValideValidation] = useState('');
 
-    // Fonction pour mettre à jour la quantité dans le panier
+    // Fonction de validation du panier
     const handleValidation = async () => {
         try {
             // Vérifier si l'utilisateur est connecté
@@ -27,25 +27,37 @@ function Panier({ userId }) {
             const panier = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
             // Vérifier si le panier n'est pas vide
             if (panier.length > 0) {
-                // Récupérer les informations nécessaires pour chaque produit dans le panier
-                const produitsAUpdater = panier.map(item => ({
-                    id: item.id,
-                    quantite: item.quantite,
-                }));
-                console.log(produitsAUpdater)
-                // Envoyer la requête PUT au backend avec les mises à jour
-                const response = await fetch(`${baseUrl}/api/produits/editProduitQuantite`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'authorization': Cookies.get('token'),
-                    },
-                    body: JSON.stringify(produitsAUpdater),
-                });
-                const data = await response.json();
+                for (const item of panier) {
+                    // Récupérer les informations nécessaires pour chaque produit dans le panier
+                    const produitAUpdater = {
+                        id_utilisateur: userId,
+                        id_produit: item.id,
+                        quantite: item.quantite,
+                    };
+
+                    const reponse = await fetch(`${baseUrl}/api/commandes/getNombreCommandeByData`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'authorization': Cookies.get('token'),
+                        },
+                        body: JSON.stringify(produitAUpdater),
+                    });
+
+                    if (!reponse.ok) {
+                        throw new Error(`Erreur lors de la vérification du nombre de commandes pour le produit ${item.id}`);
+                    }
+
+                    const nombreCommande = await reponse.json();
+
+                    if (nombreCommande === 0) {
+                        await addProduitCommande(produitAUpdater);
+                    } else {
+                        await EditProduitCommandeQuantite(produitAUpdater)
+                    }
+                }
                 ls.removeItem('panier');
                 setPanier([]);
-                console.log(data.message);
                 setValideValidation("Commande effectuée avec succès.");
                 setTimeout(() => setValideValidation(''), 5000);
             } else {
@@ -56,14 +68,63 @@ function Panier({ userId }) {
         }
     };
 
+    //Fonction pour ajouter les données à la commande
+    const addProduitCommande = async (DataProduit) => {
+        try {
+            const reponseAdd = await fetch(`${baseUrl}/api/commandes/addProduitCommande`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': Cookies.get('token'),
+                },
+                body: JSON.stringify(DataProduit),
+            });
+            const reponseEditQuantite = await fetch(`${baseUrl}/api/produits/editProduitQuantite`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': Cookies.get('token'),
+                },
+                body: JSON.stringify(DataProduit),
+            });
+            if (!reponseAdd.ok || !reponseEditQuantite.ok) {
+                throw new Error(`Erreur lors de l'ajout ou de la modification du produit ${DataProduit.id_produit} dans la commande`);
+            }
+        } catch (error) {
+            console.error(error);
+            throw new Error("Une erreur s'est produite lors de l'ajout du produit dans la commande");
+        }
+    };
+
+    //Fonction pour mettre à jour la quantité à la commande
+    const EditProduitCommandeQuantite = async (DataProduit) => {
+        const reponseEdit = await fetch(`${baseUrl}/api/commandes/editProduitCommande`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': Cookies.get('token'),
+            },
+            body: JSON.stringify(DataProduit),
+        });
+        const reponseEditQuantite = await fetch(`${baseUrl}/api/produits/editProduitQuantite`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': Cookies.get('token'),
+            },
+            body: JSON.stringify(DataProduit),
+        });
+        if (!reponseEdit.ok || !reponseEditQuantite.ok) {
+            throw new Error(`Erreur lors de la modification du produit ${DataProduit.id_produit} dans la commande`);
+        }
+    }
+
     // Fonction pour supprimer un élément du panier
     const removeFromCart = (productId) => {
         try {
             const cart = ls.getItem('panier') ? JSON.parse(ls.getItem('panier')) : [];
-
             // Trouver l'index de l'élément à supprimer
             const indexToRemove = cart.findIndex(item => item.id === productId);
-
             if (indexToRemove !== -1) {
                 // Modifier directement le panier dans le localStorage en supprimant l'élément
                 cart.splice(indexToRemove, 1);

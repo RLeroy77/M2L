@@ -140,7 +140,7 @@ export default function Produit() {
                             </Table>
                             <Button
                                 as={Link} to={'/panier'}
-                                className='btn-good'>
+                                className='btn-good mb-3'>
                                 Voir le panier
                             </Button>
                         </React.Fragment>

@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 exports.GetAllUsers = async (req, res) => {
     try {
         console.log("Lancement de la requête");
-        const [rows] = await db.pool.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
-        console.log(rows);
-        res.status(200).json(rows);
+        const [Utilisateurs] = await db.pool.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
+        console.log(Utilisateurs);
+        res.status(200).json(Utilisateurs);
     } catch (err) {
         console.log(err);
         res.status(500).send("Erreur lors de l'exécution de la requête");
@@ -36,7 +36,7 @@ exports.EditUserRole = async (req, res) => {
 };
 
 // Route pour supprimer un utilisateur en fonction de son ID dans AdminUser.jsx
-exports.DeleteUser =async (req, res) => {
+exports.DeleteUser = async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si l'utilisateur existe avant de le supprimer
