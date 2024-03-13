@@ -19,7 +19,7 @@ export default function Produit() {
             const data = await reponse.json();
             setProduct(data);
         } catch (error) {
-            console.log(error);
+            throw new Error(error);
         }
     };
 
@@ -140,7 +140,7 @@ export default function Produit() {
                             </Table>
                             <Button
                                 as={Link} to={'/panier'}
-                                className='btn-good'>
+                                className='btn-good mb-3'>
                                 Voir le panier
                             </Button>
                         </React.Fragment>

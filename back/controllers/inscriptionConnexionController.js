@@ -18,7 +18,6 @@ exports.Inscription = async (req, res) => {
         );
         res.status(200).json({ message: "Utilisateur ajouté avec succès" });
     } catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Erreur lors de l'ajout de l'utilisateur" });
     }
 };
@@ -41,7 +40,6 @@ exports.Connexion = async (req, res) => {
             res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
         }
     } catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Erreur lors de la connexion" });
     }
 }

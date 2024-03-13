@@ -5,6 +5,6 @@ const middelwareAuth = require('../middleware/middleware');
 
 router.get('/getAllProduits', middelwareAuth.WithDBConnection, produitsController.GetAllProduits);
 router.get('/getProduitById/:id', middelwareAuth.WithDBConnection, produitsController.GetProduitById);
-router.put('/editProduitQuantite', middelwareAuth.WithDBConnection,middelwareAuth.Authentificator, produitsController.EditProduitQuantite);
+router.put('/editProduitQuantite', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, produitsController.EditProduitQuantite);
 
 module.exports = router;

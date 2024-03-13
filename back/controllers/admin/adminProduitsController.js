@@ -7,7 +7,6 @@ const crypto = require('crypto')
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
 exports.addProduit = async (req, res) => {
     try {
-        console.log(req.body)
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -22,8 +21,7 @@ exports.addProduit = async (req, res) => {
             [id, nom, prix, quantite, description, date_creation]
         );
         res.status(200).json({ message: "Produit ajouté avec succès" });
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
         res.status(500).json({ error: "Erreur lors de l'ajout d'un produit" });
     }
 };
@@ -57,7 +55,6 @@ exports.editProduit = async (req, res) => {
         }
         // Combiner les champs dans la requête SQL
         updateQuery += updateFields.join(',') + ' WHERE id = ?';
-        console.log(updateQuery);
         // Construire les valeurs de mise à jour
         const updateValues = [];
         // Ajouter chaque valeur de champ à la liste s'il est fourni
@@ -78,8 +75,7 @@ exports.editProduit = async (req, res) => {
         // Effectuer la mise à jour dans la base de données
         await db.pool.execute(updateQuery, updateValues);
         res.status(200).json({ message: "Produit mis à jour avec succès" });
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
         res.status(500).json({ error: "Erreur lors de la mise à jour du produit" });
     }
 };
@@ -99,8 +95,7 @@ exports.DeleteProduit = async (req, res) => {
         // Supprimer le fichier image associé
         await fs.unlink(imagePath);
         res.status(200).json({ message: "Produit supprimé avec succès" });
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
         res.status(500).json({ error: "Erreur lors de la suppression du produit" });
     }
 };

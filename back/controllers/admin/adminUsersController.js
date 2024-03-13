@@ -4,13 +4,10 @@ const jwt = require('jsonwebtoken');
 // Route pour obtenir toutes les utilisateurs dans AdminUser.jsx
 exports.GetAllUsers = async (req, res) => {
     try {
-        console.log("Lancement de la requête");
-        const [rows] = await db.pool.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
-        console.log(rows);
-        res.status(200).json(rows);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Erreur lors de l'exécution de la requête");
+        const [Utilisateurs] = await db.pool.execute('SELECT id, nom, prenom, user_name, date_creation, date_mise_a_jour, admin FROM utilisateur');
+        res.status(200).json(Utilisateurs);
+    } catch (error) {
+        res.status(500).json({error: `Erreur lors de la récupération des utilisateurs`});
     }
 };
 
@@ -36,7 +33,7 @@ exports.EditUserRole = async (req, res) => {
 };
 
 // Route pour supprimer un utilisateur en fonction de son ID dans AdminUser.jsx
-exports.DeleteUser =async (req, res) => {
+exports.DeleteUser = async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si l'utilisateur existe avant de le supprimer
@@ -47,8 +44,7 @@ exports.DeleteUser =async (req, res) => {
         // L'utilisateur existe, procéder à la suppression
         await db.pool.execute('DELETE FROM utilisateur WHERE id = ?', [id]);
         res.status(200).json({ message: "Utilisateur supprimé avec succès" });
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
         res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur" });
     }
 };

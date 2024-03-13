@@ -4,13 +4,10 @@ const jwt = require('jsonwebtoken');
 // Middleware pour gérer la connexion à la base de données
 exports.WithDBConnection = async (req, res, next) => {
     try {
-        console.log("Lancement de la connexion");
         req.db = db.pool;
-        console.log("Connexion réussie");
         next(); // Passez à la route suivante
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur de connexion à la base de données");
+        res.status(500).json({ error: "Erreur de connexion à la base de données" });
     }
 };
 
