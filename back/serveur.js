@@ -1,7 +1,7 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
-require('dotenv').config()
+const express = require('express');
+const app = express();
+const cors = require('cors');
+require('dotenv').config();
 
 const inscriptionConnexionRoute = require('./routes/inscriptionConnexionRoute');
 const adminProduitsRoute = require('./routes/admin/adminProduitsRoute');
@@ -20,4 +20,9 @@ app.use('/api/commandes', commandesRoute);
 app.use('/api/produits', produitsRoute);
 app.use('/api/users', usersRoute);
 
-app.listen(8000);
+const PORT = process.env.PORT || 8000;
+const server = app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+module.exports = server;
