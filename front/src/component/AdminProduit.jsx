@@ -5,7 +5,7 @@ import '../style/AdminProduit.css';
 import CreateProduit from './Form/CreateProduitForm';
 
 function AdminProduit({ isAdmin }) {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
 
     const [Product, setProduct] = useState([]);
 

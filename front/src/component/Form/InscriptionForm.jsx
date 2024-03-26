@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import '../../style/InscriptionConnexion.css';
 
 function InscriptionForm() {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
     const [errorInscription, setErrorInscription] = useState('');
     const [valideInscription, setValideInscription] = useState('');
 

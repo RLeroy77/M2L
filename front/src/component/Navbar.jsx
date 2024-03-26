@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import '../style/Navbar.css'
 
 function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
 
     const navigate = useNavigate();
     const [userName, setUserName] = useState('');

@@ -5,7 +5,7 @@ import '../style/Boutique.css';
 
 
 function Boutique() {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
 
     const [Product, setProduct] = useState([]);
 

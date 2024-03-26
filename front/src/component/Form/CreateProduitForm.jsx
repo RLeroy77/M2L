@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import '../../style/AdminProduit.css';
 
 function CreateProduitForm() {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
 
     const [errorProduct, setErrorProduct] = useState('');
     const [valideProduct, setValideProduct] = useState('');

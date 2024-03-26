@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import '../style/Panier.css';
 
 function Panier({ userId }) {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
 
     const ls = useMemo(() => localStorage, []);
     const [Panier, setPanier] = useState([]);

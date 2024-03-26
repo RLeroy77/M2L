@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import '../style/Produit.css';
 
 export default function Produit() {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
 
     const ls = useMemo(() => localStorage, []);
     const { productId } = useParams(); // Utilisation de useParams directement

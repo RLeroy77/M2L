@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import '../../style/InscriptionConnexion.css';
 
 function ConnexionForm() {
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = 'http://10.74.1.151:8000';
     const navigate = useNavigate();
     const [errorConnexion, setErrorConnexion] = useState('');
     const [valideConnexion, setValideConnexion] = useState('');
