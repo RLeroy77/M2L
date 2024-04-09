@@ -1,23 +1,28 @@
 const db = require('../../database/database');
-const sharp = require('sharp');
-const fs = require('fs/promises');
-const path = require('path');
-const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto')
 
-// Route pour ajouter un produit utilisé dans AdminProduit.jsx
+//Route pour obtenir tous les produits dans 
+exports.GetAllProduits = async (req, res) => {
+    try {
+        const [AllProduits] = await db.pool.execute(
+            'SELECT id, nom, prix, quantite, description FROM produit_ap4'
+        );
+        res.status(200).json(AllProduits);
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de la récupération des produits" });
+    }
+};
+
+// Route pour ajouter un produit utilisé dans 
 exports.addProduit = async (req, res) => {
     try {
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        const image = req.file;
-        // Utiliser sharp pour redimensionner l'image
-        const resizedImagePath = path.join(__dirname, '../../../front/public/images/produits', `${id}.png`);
-        await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
-        // Supprimer l'image d'origine après redimensionnement
-        await fs.unlink(image.path);
         await db.pool.execute(
-            'INSERT INTO produit (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO produit_ap4 (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
             [id, nom, prix, quantite, description, date_creation]
         );
         res.status(200).json({ message: "Produit ajouté avec succès" });
@@ -26,19 +31,19 @@ exports.addProduit = async (req, res) => {
     }
 };
 
-//Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
+//Route pour modifier un produit en fonction de son id dans 
 exports.editProduit = async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si le produit existe avant de le mettre à jour
-        const [existingProduct] = await db.pool.execute('SELECT id FROM produit WHERE id = ?', [id]);
+        const [existingProduct] = await db.pool.execute('SELECT id FROM produit_ap4 WHERE id = ?', [id]);
         if (existingProduct.length === 0) {
             return res.status(404).json({ error: "Produit non trouvé" });
         }
         // Produit trouvé, procéder à la mise à jour
         const { nom, prix, quantite, description } = req.body;
         // Construire la requête SQL dynamiquement en fonction des champs fournis
-        let updateQuery = 'UPDATE produit SET';
+        let updateQuery = 'UPDATE produit_ap4 SET';
         const updateFields = [];
         // Vérifier chaque champ et ajouter à la liste s'il est fourni
         if (nom !== undefined) {
@@ -80,22 +85,44 @@ exports.editProduit = async (req, res) => {
     }
 };
 
-//Route pour supprimer un produit en fonction de son id dans AdminProduit.jsx
+//Route pour supprimer un produit en fonction de son id dans 
 exports.DeleteProduit = async (req, res) => {
     const id = req.params.id;
-    const imagePath = path.join(__dirname, '../../../front/public/images/produits', `${id}.png`);
     try {
         // Vérifier si le produit existe avant de le supprimer
-        const [rows] = await db.pool.execute('SELECT id FROM produit WHERE id = ?', [id]);
+        const [rows] = await db.pool.execute('SELECT id FROM produit_ap4 WHERE id = ?', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ error: "Produit non trouvé" });
         }
         // Procéder à la suppression du produit dans la base de données
-        await db.pool.execute('DELETE FROM produit WHERE id = ?', [id]);
+        await db.pool.execute('DELETE FROM produit_ap4 WHERE id = ?', [id]);
         // Supprimer le fichier image associé
-        await fs.unlink(imagePath);
         res.status(200).json({ message: "Produit supprimé avec succès" });
     } catch (error) {
         res.status(500).json({ error: "Erreur lors de la suppression du produit" });
     }
 };
+
+
+
+// Route pour la connexion utilisé dans 
+exports.Connexion = async (req, res) => {
+    const { user_name, mot_de_passe } = req.body;
+    try {
+        const [rows] = await db.pool.execute('SELECT id, mot_de_passe, admin FROM utilisateur WHERE user_name = ?', [user_name]);
+        if (rows.length === 0) {
+            return res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+        const hashedPassword = rows[0].mot_de_passe;
+        const passwordMatch = await bcrypt.compare(mot_de_passe, hashedPassword);
+        if (passwordMatch) {
+            //Générer un token JWT valide et renvoyer au client
+            const token = jwt.sign({ userId: rows[0].id, role: rows[0].admin }, process.env.API_KEY, { expiresIn: '1h' });
+            res.status(200).json({ token, message: "Authentification réussie" });
+        } else {
+            res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Erreur lors de la connexion" });
+    }
+}

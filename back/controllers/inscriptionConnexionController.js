@@ -26,7 +26,7 @@ exports.Inscription = async (req, res) => {
 exports.Connexion = async (req, res) => {
     const { user_name, mot_de_passe } = req.body;
     try {
-        const [rows] = await db.pool.execute('SELECT * FROM utilisateur WHERE user_name = ?', [user_name]);
+        const [rows] = await db.pool.execute('SELECT id, mot_de_passe FROM utilisateur WHERE user_name = ?', [user_name]);
         if (rows.length === 0) {
             return res.status(401).json({ error: "Nom d'utilisateur ou mot de passe incorrect" });
         }
