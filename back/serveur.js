@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
+const path = require('path');
 
 const inscriptionConnexionRoute = require('./routes/inscriptionConnexionRoute');
 const adminProduitsRoute = require('./routes/admin/adminProduitsRoute');
@@ -23,6 +24,8 @@ app.use('/api/produits', produitsRoute);
 app.use('/api/users', usersRoute);
 
 app.use('/apiAP4/adminProduitsAP4', adminProduitsAP4);
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const PORT = process.env.PORT || 8000;
 const server = app.listen(PORT, () => {

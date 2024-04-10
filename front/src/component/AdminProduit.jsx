@@ -176,7 +176,7 @@ function AdminProduit({ isAdmin }) {
                                         <Card className="d-flex align-items-center justify-content-center mb-2">
                                             <Card.Img
                                                 variant="top"
-                                                src={process.env.PUBLIC_URL + `/images/produits/${product.id}.png`}
+                                                src={`${baseUrl}/images/${product.id}.png`}
                                                 alt={product.nom}
                                             />
                                             <Card.Body>

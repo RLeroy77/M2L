@@ -50,7 +50,7 @@ function CreateProduitForm() {
             formData.append('quantite', data.quantite);
             formData.append('description', data.description);
             formData.append('image', data.image[0]); // Prenez le premier fichier du tableau
-
+            
             const reponse = await fetch(`${baseUrl}/api/adminProduits/addProduit`, {
                 method: 'POST',
                 headers: {
