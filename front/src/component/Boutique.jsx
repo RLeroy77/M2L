@@ -34,10 +34,15 @@ function Boutique() {
                             {Product.map((product) => (
                                 <Col key={product.id} xs={12} md={6} lg={4} xxl={3}>
                                     <Card className="d-flex align-items-center justify-content-center mb-2">
-                                        <Card.Img
-                                            variant="top"
+                                        {/* Vérifie si l'image principale est chargée avec succès */}
+                                        <img
                                             src={`${baseUrl}/images/${product.id}.png`}
                                             alt={product.nom}
+                                            onError={(e) => {
+                                                // Si l'image principale ne peut pas être chargée, utilise l'image par défaut
+                                                e.target.onerror = null; // Pour éviter une boucle infinie
+                                                e.target.src = `${baseUrl}/images/default_image.png`;
+                                            }}
                                         />
                                         <Card.Body>
                                             <Card.Title>{product.nom}</Card.Title>

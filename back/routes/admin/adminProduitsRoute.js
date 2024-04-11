@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/addProduit', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, upload.single('image'), adminProduitsController.addProduit);
+router.post('/addProduitFlutter', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.addProduitFlutter);
 router.put('/editProduit/:id', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.editProduit);
 router.delete('/deleteProduit/:id', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.DeleteProduit);
 

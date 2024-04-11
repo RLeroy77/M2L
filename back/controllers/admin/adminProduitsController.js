@@ -10,13 +10,29 @@ exports.addProduit = async (req, res) => {
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        console.log(date_creation)
         const image = req.file;
+        console.log(image);
         // Utiliser sharp pour redimensionner l'image
         const resizedImagePath = path.join(__dirname, '../../images', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
         // Supprimer l'image d'origine après redimensionnement
         await fs.unlink(image.path);
+        await db.pool.execute(
+            'INSERT INTO produit (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
+            [id, nom, prix, quantite, description, date_creation]
+        );
+        res.status(200).json({ message: "Produit ajouté avec succès" });
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de l'ajout d'un produit" });
+    }
+};
+
+// Route pour ajouter un produit utilisé dans l'application mobile
+exports.addProduitFlutter = async (req, res) => {
+    try {
+        const { nom, prix, quantite, description } = req.body;
+        const id = crypto.randomUUID();
+        const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
         await db.pool.execute(
             'INSERT INTO produit (id, nom, prix, quantite, description, date_creation) VALUES (?, ?, ?, ?, ?, ?)',
             [id, nom, prix, quantite, description, date_creation]

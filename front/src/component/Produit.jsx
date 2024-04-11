@@ -68,10 +68,14 @@ export default function Produit() {
                 <Col xs={12} md={6} className='mb-2'>
                     <h1>Détails du produit</h1>
                     <Card style={{ width: '18rem' }}>
-                        <Card.Img variant="top"
-                            src={process.env.PUBLIC_URL + `/images/produits/${productId}.png`}
+                        <img
+                            src={`${baseUrl}/images/${productId}.png`}
                             alt={product?.nom}
-                            fluid="true"
+                            onError={(e) => {
+                                // Si l'image principale ne peut pas être chargée, utilise l'image par défaut
+                                e.target.onerror = null; // Pour éviter une boucle infinie
+                                e.target.src = `${baseUrl}/images/default_image.png`;
+                            }}
                         />
                         <Card.Body>
                             <Card.Title>{product?.nom}</Card.Title>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3308
--- Généré le : mar. 09 avr. 2024 à 12:54
+-- Généré le : jeu. 11 avr. 2024 à 14:44
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -68,39 +68,14 @@ CREATE TABLE IF NOT EXISTS `produit` (
 --
 
 INSERT INTO `produit` (`id`, `nom`, `prix`, `quantite`, `description`, `date_creation`, `date_mise_a_jour`) VALUES
-('efba3820-a23d-40f2-8059-f5a799d2cbde', 'Produits 7', '7.77', 44, 'C la produit 7', '2024-01-02 10:56:18', '2024-04-09 07:54:02'),
+('efba3820-a23d-40f2-8059-f5a799d2cbde', 'Produits 7', '7.77', 32, 'C la produit 7', '2024-01-02 10:56:18', '2024-04-10 08:09:36'),
 ('75a63711-4797-471f-b558-5c9e0de9c122', 'Produit 6', '6.00', 45, 'C\'est le produit 6', '2024-01-02 10:55:28', '2024-03-12 14:06:52'),
 ('0de720ed-7a1f-46a1-89f2-da756aa32da6', 'Produit 2', '2.00', 15, 'C\'est le produit 2', '2023-12-19 10:38:43', '2024-03-13 15:35:48'),
 ('7dcd333f-8908-4f71-8c58-dc21c07412a0', 'Produit 3', '3.00', 27, 'C\'est le produit 3', '2023-12-19 12:21:29', '2024-03-12 14:29:47'),
-('90440974-5c6d-4e52-9eeb-583384d8ce1a', 'Produit 1', '1.00', 11, 'C le produit 1', '2024-03-12 08:10:23', '2024-03-12 09:10:23');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `produit_ap4`
---
-
-DROP TABLE IF EXISTS `produit_ap4`;
-CREATE TABLE IF NOT EXISTS `produit_ap4` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `prix` decimal(10,2) DEFAULT NULL,
-  `quantite` int DEFAULT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `date_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_mise_a_jour` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déchargement des données de la table `produit_ap4`
---
-
-INSERT INTO `produit_ap4` (`id`, `nom`, `prix`, `quantite`, `description`, `date_creation`, `date_mise_a_jour`) VALUES
-('17488faf-ec45-11ee-9f7d-a85e45c79a6a', 'Test 1', '10.00', 11, 'c le test 1', '2024-03-27 14:19:58', '2024-03-27 14:19:58'),
-('282f5408-ec4b-11ee-9f7d-a85e45c79a6a', 'test 2', '12.00', 22, 'c le test 2', '2024-03-27 15:03:23', '2024-03-27 15:03:23'),
-('193cef63-9393-48f9-9c0f-2a22336b21a5', 'Test 3', '53.00', 33, 'c le test 3', '2024-03-27 14:26:11', '2024-03-27 15:26:11'),
-('64c582a5-7553-4bcc-9991-5a44b4a2a8ba', 'test 4', '44.00', 44, 'Test 4', '2024-04-09 08:33:14', '2024-04-09 10:33:14');
+('90440974-5c6d-4e52-9eeb-583384d8ce1a', 'Produit 1', '1.00', 11, 'C le produit 1', '2024-03-12 08:10:23', '2024-03-12 09:10:23'),
+('39c24f1b-243e-421c-b39b-d79765738129', 'test 2', '22.00', 22, 'tt', '2024-04-11 08:01:22', '2024-04-11 10:01:22'),
+('545c07b3-44cd-4af3-a1cd-68fd00719b90', 'Produit 66', '66.00', 66, 'Oder 66', '2024-04-11 10:12:23', '2024-04-11 14:43:30'),
+('393cf35b-bc73-4383-a025-5940f83ad085', 'Cheeeeef', '12.00', 34, '§§§', '2024-04-11 12:43:57', '2024-04-11 14:43:57');
 
 -- --------------------------------------------------------
 

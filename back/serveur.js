@@ -11,8 +11,6 @@ const commandesRoute = require('./routes/commandesRoute');
 const produitsRoute = require('./routes/produitsRoute');
 const usersRoute = require('./routes/usersRoute');
 
-const adminProduitsAP4 = require('./routes/admin/adminProduitsAP4Route');
-
 app.use(express.json());
 app.use(cors());
 
@@ -22,8 +20,6 @@ app.use('/api/adminUsers', adminUsersRoute);
 app.use('/api/commandes', commandesRoute);
 app.use('/api/produits', produitsRoute);
 app.use('/api/users', usersRoute);
-
-app.use('/apiAP4/adminProduitsAP4', adminProduitsAP4);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
