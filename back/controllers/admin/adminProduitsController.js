@@ -11,7 +11,6 @@ exports.addProduit = async (req, res) => {
         const id = crypto.randomUUID();
         const date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const image = req.file;
-        console.log(image);
         // Utiliser sharp pour redimensionner l'image
         const resizedImagePath = path.join(__dirname, '../../images', `${id}.png`);
         await sharp(image.path).resize(300, 200).toFile(resizedImagePath);
