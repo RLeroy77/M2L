@@ -26,7 +26,7 @@ function App() {
       const data = await response.json();
       setIsAdmin(data[0].admin);
     } catch (error) {
-      console.error('Erreur lors de la récupération des informations utilisateur:', error);
+      throw new Error('Erreur lors de la récupération des informations utilisateur:', error);
     }
   };
 

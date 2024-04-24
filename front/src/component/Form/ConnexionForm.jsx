@@ -53,12 +53,10 @@ function ConnexionForm() {
                 setTimeout(() => window.location.reload(), 100);
                 navigate('/');
             } else {
-                console.error("Erreur lors de la connexion :", response.statusText);
                 setErrorConnexion("Nom d'utilisateur ou mot de passe incorrect");
                 setTimeout(() => setErrorConnexion(''), 5000);
             }
         } catch (error) {
-            console.error("Erreur lors de la connexion :", error);
             setErrorConnexion("Erreur lors de la connexion : " + error.message);
             setTimeout(() => setErrorConnexion(''), 5000);
         }

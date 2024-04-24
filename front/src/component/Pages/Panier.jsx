@@ -90,8 +90,7 @@ function Panier({ userId }) {
                 throw new Error(`Erreur lors de l'ajout ou de la modification du produit ${DataProduit.id_produit} dans la commande`);
             }
         } catch (error) {
-            console.error(error);
-            throw new Error("Une erreur s'est produite lors de l'ajout du produit dans la commande");
+            throw new Error("Une erreur s'est produite lors de l'ajout du produit dans la commande", error);
         }
     };
 
@@ -131,7 +130,7 @@ function Panier({ userId }) {
                 setPanier([...cart]); // Mettre à jour l'état local avec le panier modifié
             }
         } catch (error) {
-            console.error(error);
+            throw new Error(error);
         }
     };
 

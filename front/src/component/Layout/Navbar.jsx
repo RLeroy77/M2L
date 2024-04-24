@@ -24,7 +24,7 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
             const data = await response.json();
             setUserName(data[0].user_name);
         } catch (error) {
-            console.error('Error fetching user info:', error);
+            throw new Error('Error fetching user info:', error);
         }
     };
 

@@ -56,7 +56,6 @@ exports.EditProduitCommande = async (req, res) => {
         );
         res.status(200).json({ message: `Quantité de la commande avec l'id utilisateur : ${id_utilisateur} et l'id produit : ${id_produit} mise à jour avec succès` });
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: "Erreur lors de la mise à jour de la quantité de la commande" });
     }
 };

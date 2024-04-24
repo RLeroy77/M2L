@@ -87,13 +87,11 @@ function AdminProduit({ isAdmin }) {
                     });
                     setTimeout(() => setValideEdit(''), 2500);
                 } else {
-                    console.error("Erreur lors de la modification du produit :", editProductResponse.statusText);
                     setErrorEdit("Erreur lors de la modification du produit : " + editProductResponse.statusText);
                     setTimeout(() => setErrorEdit(''), 2500);
                 }
             }
         } catch (error) {
-            console.error("Erreur lors de la modification du produit :", error);
             setErrorEdit("Erreur lors de la modification du produit : " + error);
             setTimeout(() => setErrorEdit(''), 2500);
         }
@@ -142,12 +140,10 @@ function AdminProduit({ isAdmin }) {
                 setValideDelete('Produit supprimé avec succès');
                 setTimeout(() => setValideDelete(''), 2500);
             } else {
-                console.error("Erreur lors de la suppression du produit :", deleteProductResponse.statusText);
                 setErrorDelete("Erreur lors de la suppression du produit : " + deleteProductResponse.statusText);
                 setTimeout(() => setErrorDelete(''), 2500);
             }
         } catch (error) {
-            console.error("Une erreur s'est produite :", error);
             setErrorDelete("Erreur lors de la suppression du produit : " + error);
             setTimeout(() => setErrorDelete(''), 2500);
         }

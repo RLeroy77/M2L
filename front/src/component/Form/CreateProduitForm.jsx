@@ -50,7 +50,7 @@ function CreateProduitForm() {
             formData.append('quantite', data.quantite);
             formData.append('description', data.description);
             formData.append('image', data.image[0]); // Prenez le premier fichier du tableau
-            
+
             const reponse = await fetch(`${baseUrl}/api/adminProduits/addProduit`, {
                 method: 'POST',
                 headers: {
@@ -63,13 +63,12 @@ function CreateProduitForm() {
                 setValideProduct('Produit ajouté avec succès');
                 reset();
                 setTimeout(() => setValideProduct(''), 2500);
+                window.location.reload();
             } else {
-                console.error("Erreur lors de l'ajout d'un produit :", reponse.statusText);
                 setErrorProduct("Erreur lors de l'ajout d'un produit : " + reponse.statusText);
                 setTimeout(() => setErrorProduct(''), 2500);
             }
         } catch (error) {
-            console.error("Erreur lors de l'ajout d'un produit :", error);
             setErrorProduct("Erreur lors de l'ajout d'un produit : " + error);
             setTimeout(() => setErrorProduct(''), 2500);
         }

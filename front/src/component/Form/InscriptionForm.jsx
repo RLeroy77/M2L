@@ -63,12 +63,10 @@ function InscriptionForm() {
                 reset();
                 setTimeout(() => setValideInscription(''), 5000);
             } else {
-                console.error("Erreur lors de l'inscription :", response.statusText);
                 setErrorInscription("Erreur lors de l'inscription : " + response.statusText);
                 setTimeout(() => setErrorInscription(''), 5000);
             }
         } catch (error) {
-            console.error("Erreur lors de l'inscription :", error);
             setErrorInscription("Erreur lors de l'inscription : " + error.message);
             setTimeout(() => setErrorInscription(''), 5000);
         }

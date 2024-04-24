@@ -74,7 +74,6 @@ export default function AdminUser({ isAdmin }) {
                 throw new Error('Erreur lors de la modification du rôle');
             }
         } catch (error) {
-            console.error("Erreur lors de la modification du rôle :", error);
             setErrorRole("Erreur lors de la modification du rôle : " + error.message);
             setTimeout(() => setErrorRole(''), 2500);
             // Revert à l'état précédent si une erreur survient
@@ -101,12 +100,10 @@ export default function AdminUser({ isAdmin }) {
                 setValideDelete('utilisateur supprimé avec succès');
                 setTimeout(() => setValideDelete(''), 2500);
             } else {
-                console.error("Erreur lors de la suppression du utilisateur :", deleteUserResponse.statusText);
                 setErrorDelete("Erreur lors de la suppression du utilisateur : " + deleteUserResponse.statusText);
                 setTimeout(() => setErrorDelete(''), 2500);
             }
         } catch (error) {
-            console.error("Une erreur s'est utilisateure :", error);
             setErrorDelete("Erreur lors de la suppression du utilisateur : " + error);
             setTimeout(() => setErrorDelete(''), 2500);
         }

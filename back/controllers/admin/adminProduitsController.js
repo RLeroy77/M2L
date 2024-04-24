@@ -100,16 +100,22 @@ exports.EditProduit = async (req, res) => {
 exports.DeleteProduit = async (req, res) => {
     const id = req.params.id;
     const imagePath = path.join(__dirname, '../../images', `${id}.png`);
+    const imageUrl = `http://localhost:8000/images/${id}.png`;
     try {
         // Vérifier si le produit existe avant de le supprimer
         const [rows] = await db.pool.execute('SELECT id FROM produit WHERE id = ?', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ error: "Produit non trouvé" });
         }
+        // Vérifier si l'image associée existe
+        const response = await fetch(imageUrl, { method: 'HEAD' });
+        if (response.ok) {
+            // Supprimer l'image associée si elle existe
+            await fs.unlink(imagePath);
+        }
         // Procéder à la suppression du produit dans la base de données
         await db.pool.execute('DELETE FROM produit WHERE id = ?', [id]);
-        // Supprimer le fichier image associé
-        await fs.unlink(imagePath);
+
         res.status(200).json({ message: "Produit supprimé avec succès" });
     } catch (error) {
         res.status(500).json({ error: "Erreur lors de la suppression du produit" });
