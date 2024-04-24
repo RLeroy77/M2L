@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Card, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import '../style/Boutique.css';
+import '../../style/Pages/Boutique.css';
 
 
 function Boutique() {

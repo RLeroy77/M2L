@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from 'react-bootstrap';
-import '../style/APropos.css';
+import '../../style/Pages/APropos.css';
 
 function APropos() {
     return (

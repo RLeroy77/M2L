@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
-import '../style/Panier.css';
+import '../../style/Pages/Panier.css';
 
 function Panier({ userId }) {
     const baseUrl = 'http://10.74.1.151:8000';

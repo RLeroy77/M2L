@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import '../style/Navbar.css'
+import '../../style/Layout/Navbar.css'
 
 function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
     const baseUrl = 'http://10.74.1.151:8000';
@@ -49,7 +49,6 @@ function MyNavbar({ userId, setUserId, isAdmin, setIsAdmin }) {
                     <Nav>
                         {userId ? (
                             <NavDropdown title={userName} id="collapsible-nav-dropdown">
-                                <NavDropdown.Item as={Link} to="/Profil" className='px-1'>Profil</NavDropdown.Item>
                                 {isAdmin === 1 && (
                                     <>
                                         <NavDropdown.Item as={Link} to="/AdminUser" className='px-1'>Gestion des comptes</NavDropdown.Item>

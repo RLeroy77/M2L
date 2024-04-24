@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
 import Cookies from 'js-cookie';
-import '../style/AdminProduit.css';
-import CreateProduit from './Form/CreateProduitForm';
+import CreateProduit from '../Form/CreateProduitForm';
+import '../../style/Admin/AdminProduit.css';
 
 function AdminProduit({ isAdmin }) {
     const baseUrl = 'http://10.74.1.151:8000';

@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
-import '../style/AdminUser.css';
+import '../../style/Admin/AdminUser.css';
 
 export default function AdminUser({ isAdmin }) {
     const baseUrl = 'http://10.74.1.151:8000';

@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import '../../style/InscriptionConnexion.css';
+import '../../style/Form/InscriptionConnexion.css';
 
 function ConnexionForm() {
     const baseUrl = 'http://10.74.1.151:8000';

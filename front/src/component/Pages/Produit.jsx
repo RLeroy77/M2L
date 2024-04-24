@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Row, Col, Card, Form, ListGroup, Button, Table } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
-import '../style/Produit.css';
+import '../../style/Pages/Produit.css';
 
 export default function Produit() {
     const baseUrl = 'http://10.74.1.151:8000';

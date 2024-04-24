@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import Cookies from 'js-cookie';
-import '../../style/AdminProduit.css';
+import '../../style/Admin/AdminProduit.css';
 
 function CreateProduitForm() {
     const baseUrl = 'http://10.74.1.151:8000';

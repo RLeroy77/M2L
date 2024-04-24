@@ -2,17 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
-import Navbar from './Navbar';
-import Home from './Home';
-import Boutique from './Boutique';
-import Produit from './Produit';
-import Panier from './Panier';
-import APropos from './APropos';
-import InscriptionConnexion from './InscriptionConnexion';
-import Profil from './Profil'
-import AdminProduit from './AdminProduit';
-import AdminUser from './AdminUser';
-import Footer from './Footer';
+import Navbar from './Layout/Navbar';
+import Home from './Pages/Home';
+import Boutique from './Pages/Boutique';
+import Produit from './Pages/Produit';
+import Panier from './Pages/Panier';
+import APropos from './Pages/APropos';
+import InscriptionConnexion from './Pages/InscriptionConnexion';
+import AdminProduit from './Admin/AdminProduit';
+import AdminUser from './Admin/AdminUser';
+import Footer from './Layout/Footer';
 import '../style/App.css';
 
 function App() {
@@ -56,7 +55,6 @@ function App() {
           <Route path='/Panier' element={<Panier userId={userId} />} />
           <Route path='/APropos' element={<APropos />} />
           <Route path='/InscriptionConnexion' element={<InscriptionConnexion />} />
-          <Route path='/Profil' element={<Profil userId={userId} />} />
           <Route path='/AdminProduit' element={<AdminProduit isAdmin={isAdmin} />} />
           <Route path='/AdminUser' element={<AdminUser isAdmin={isAdmin} />} />
         </Routes>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import '../style/Home.css';
+import '../../style/Pages/Home.css';
 
 function Home() {
     return (
