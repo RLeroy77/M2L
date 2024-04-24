@@ -16,7 +16,7 @@ exports.GetNombreCommandeByData = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Erreur lors de la récupération du nombre de commandes." });
     }
-}
+};
 
 //Route pour ajouté les éléments à la table commande dans Panier.jsx
 exports.AddProduitCommande = async (req, res) => {
@@ -59,4 +59,4 @@ exports.EditProduitCommande = async (req, res) => {
         console.error(error);
         res.status(500).json({ error: "Erreur lors de la mise à jour de la quantité de la commande" });
     }
-}
+};

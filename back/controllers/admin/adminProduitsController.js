@@ -5,7 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 // Route pour ajouter un produit utilisé dans AdminProduit.jsx
-exports.addProduit = async (req, res) => {
+exports.AddProduit = async (req, res) => {
     try {
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
@@ -27,7 +27,7 @@ exports.addProduit = async (req, res) => {
 };
 
 // Route pour ajouter un produit utilisé dans l'application mobile
-exports.addProduitFlutter = async (req, res) => {
+exports.AddProduitFlutter = async (req, res) => {
     try {
         const { nom, prix, quantite, description } = req.body;
         const id = crypto.randomUUID();
@@ -43,7 +43,7 @@ exports.addProduitFlutter = async (req, res) => {
 };
 
 //Route pour modifier un produit en fonction de son id dans AdminProduit.jsx
-exports.editProduit = async (req, res) => {
+exports.EditProduit = async (req, res) => {
     const id = req.params.id;
     try {
         // Vérifier si le produit existe avant de le mettre à jour

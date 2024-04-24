@@ -1,7 +1,7 @@
 const db = require('../database/database');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto')
+const crypto = require('crypto');
 
 
 // Route pour inscrire un utilisateur utilisé dans InscriptionConnexion.jsx
@@ -42,4 +42,4 @@ exports.Connexion = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: "Erreur lors de la connexion" });
     }
-}
+};

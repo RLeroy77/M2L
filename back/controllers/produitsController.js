@@ -27,7 +27,7 @@ exports.GetProduitById = async (req, res) => {
             res.status(200).json(product);
         }
     } catch (error) {
-        res.status(500).json({ error: `Erreur lors de la récupération du produit ${productId} ` });
+        res.status(500).json({ error: `Erreur lors de la récupération du produit ${productId}` });
     }
 };
 

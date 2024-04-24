@@ -1,5 +1,4 @@
 const db = require('../../database/database');
-const jwt = require('jsonwebtoken');
 
 // Route pour obtenir toutes les utilisateurs dans AdminUser.jsx
 exports.GetAllUsers = async (req, res) => {

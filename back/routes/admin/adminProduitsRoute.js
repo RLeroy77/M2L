@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const adminProduitsController = require('../../controllers/admin/adminProduitsController')
-const middelwareAuth = require('../../middleware/middleware')
+const adminProduitsController = require('../../controllers/admin/adminProduitsController');
+const middelwareAuth = require('../../middleware/middleware');
 
 // Configuration de multer pour gérer les téléchargements de fichiers
 const storage = multer.diskStorage({
@@ -17,12 +17,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post('/addProduit', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, upload.single('image'), adminProduitsController.addProduit);
-router.post('/addProduitFlutter', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.addProduitFlutter);
-router.put('/editProduit/:id', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.editProduit);
+router.post('/addProduit', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, upload.single('image'), adminProduitsController.AddProduit);
+router.post('/addProduitFlutter', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.AddProduitFlutter);
+router.put('/editProduit/:id', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.EditProduit);
 router.delete('/deleteProduit/:id', middelwareAuth.WithDBConnection, middelwareAuth.Authentificator, middelwareAuth.CheckRole, adminProduitsController.DeleteProduit);
-
-
-
 
 module.exports = router;

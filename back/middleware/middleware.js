@@ -25,11 +25,10 @@ exports.Authentificator = (req, res, next) => {
     } else {
         res.status(401).json({ error: 'Acces denide.' });
     }
-}
+};
 
 exports.CheckRole = async (req, res, next) => {
     const token = req.query.token ? req.query.token : req.headers.authorization;
-
     if (token && process.env.API_KEY) {
         jwt.verify(token, process.env.API_KEY, async (err, decoded) => {
             if (err) {
@@ -47,4 +46,4 @@ exports.CheckRole = async (req, res, next) => {
     } else {
         res.status(401).json({ error: 'Access denied.' });
     }
-}
+};
