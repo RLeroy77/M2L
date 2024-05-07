@@ -49,7 +49,7 @@ function ConnexionForm() {
             if (response.ok) {
                 const responseData = await response.json();
                 setValideConnexion('Connexion réussie !');
-                Cookies.set('token', responseData.token, { expires: 1, secure: true, sameSite: 'strict' });
+                Cookies.set('token', responseData.token, { expires: 1, sameSite: 'strict' });
                 setTimeout(() => window.location.reload(), 100);
                 navigate('/');
             } else {
