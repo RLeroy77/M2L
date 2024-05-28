@@ -29,6 +29,6 @@ utilisateurs, avec des fonctionnalités telles que l'ajout, la modification et l
 1. Cloner le repository GitHub sur votre machine locale.
 2. Installer les dependances front-end et back-end en executant `npm install` à la racine du dossier `front/` et du dossier `back/` .
 3. Configurer les variables d'environnement en reprenant le modèle `.env` (`.env.exemple`).
-4. Lancer le serveur back-end en exécutant `nodemon` à la racine du dossier `back/` .
+4. Lancer le serveur back-end en exécutant `nodemon serveur.js` à la racine du dossier `back/` .
 5. Lancer le serveur front-end en exécutant `npm start` à la racine du dossier `front/` .
 6. Un compte administrateur est déjà disponible pour tester l'application. Utilisateur : `u test` et Mot de Passe : `mdptest` .
