@@ -15,7 +15,7 @@ import Footer from './Layout/Footer';
 import '../style/App.css';
 
 function App() {
-  const baseUrl = 'http://10.74.1.151:8000';
+  const baseUrl = 'http://192.168.1.230:8000';
 
   const [userId, setUserId] = useState("");
   const [isAdmin, setIsAdmin] = useState(null);

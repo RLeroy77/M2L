@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import '../../style/Admin/AdminUser.css';
 
 export default function AdminUser({ isAdmin }) {
-    const baseUrl = 'http://10.74.1.151:8000';
+    const baseUrl = 'http://192.168.1.230:8000';
 
     const [User, setUser] = useState([]);
     const [userId, setUserId] = useState(null);
